@@ -38,10 +38,11 @@ function App() {
         }
         setTask1([newTask, ...tasks1])
     }
+    const changeTaskStatus = (taskId: string) => {
+        const newTasks = tasks1.map((task) => task.id === taskId ? {...task, isDone: !task.isDone} : task)
+        setTask1(newTasks)
+    }
     const [tasksForTodolist, setTaskForTodolist] = useState<Array<ITask>>(tasks1)
-    useEffect(() => {
-        setTaskForTodolist(tasks1)
-    }, [tasks1])
     useEffect(() => {
         switch (filter) {
             case Filter.ALL:
@@ -57,13 +58,17 @@ function App() {
                 setTaskForTodolist(tasks1)
         }
     }, [filter, tasks1])
+
     return (
         <div className="App">
             <Todolist title={"What to learn"}
                       tasks={tasksForTodolist}
+                      filter={filter}
                       setFilter={setFilter}
                       addTask={addTask}
-                      deleteTaskHandler={deleteTask}/>
+                      deleteTaskHandler={deleteTask}
+                      changeTaskStatus={changeTaskStatus}
+            />
         </div>
     );
 }

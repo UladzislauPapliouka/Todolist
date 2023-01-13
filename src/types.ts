@@ -2,8 +2,10 @@ interface ITodolist {
     title: string
     tasks: Array<ITask>
     deleteTaskHandler: (taskIs: string) => void
+    filter: Filter
     setFilter: (filter: Filter) => void
-    addTask: (taskId: string) => void
+    addTask: (taskTitle: string) => void
+    changeTaskStatus: (taskId: string) => void
 }
 
 interface ITask {
