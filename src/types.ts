@@ -3,6 +3,7 @@ interface ITodolist {
     tasks: Array<ITask>
     deleteTaskHandler: (taskIs: string) => void
     setFilter: (filter: Filter) => void
+    addTask: (taskId: string) => void
 }
 
 interface ITask {
