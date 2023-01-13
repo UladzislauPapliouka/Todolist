@@ -1,19 +1,21 @@
 import React, {ChangeEvent, FC, KeyboardEvent, useState} from "react";
-import {Filter, ITodolist} from "../../types";
+import {Filter, ITodolistProps} from "../../types";
 
-export const Todolist: FC<ITodolist> = ({
-                                            title,
-                                            tasks,
-                                            deleteTaskHandler,
-                                            setFilter,
-                                            addTask,
-                                            changeTaskStatus,
-                                            filter
-                                        }) => {
+export const Todolist: FC<ITodolistProps> = ({
+                                                 id,
+                                                 title,
+                                                 tasks,
+                                                 deleteTaskHandler,
+                                                 setFilter,
+                                                 addTask,
+                                                 changeTaskStatus,
+                                                 filter,
+                                                 deleteTodolist
+                                             }) => {
     const [newTaskTitle, setNewTaskTitle] = useState<string>("")
     const onAddTaskHandler = () => {
         if (newTaskTitle.trim()) {
-            addTask(newTaskTitle)
+            addTask(newTaskTitle, id)
             setNewTaskTitle("")
         } else {
             setError(true)
@@ -26,14 +28,17 @@ export const Todolist: FC<ITodolist> = ({
     const onKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
         event.key === "Enter" && onAddTaskHandler()
     }
-    const setFilterAll = () => setFilter(Filter.ALL)
-    const setFilterACTIVE = () => setFilter(Filter.ACTIVE)
-    const setFilterCOMPLETED = () => setFilter(Filter.COMPLETED)
+    const setFilterAll = () => setFilter(Filter.ALL, id)
+    const setFilterACTIVE = () => setFilter(Filter.ACTIVE, id)
+    const setFilterCOMPLETED = () => setFilter(Filter.COMPLETED, id)
+    const deleteTodolistHandler = () => deleteTodolist(id)
     const errorMessage = <span className={"error-message"}>Field is required</span>
     const [error, setError] = useState<boolean>(false)
     return (
         <div>
-            <h3>{title}</h3>
+            <h3>{title}
+                <button onClick={deleteTodolistHandler}>X</button>
+            </h3>
             <div>
                 <input onKeyPress={onKeyPressHandler}
                        value={newTaskTitle}
@@ -45,8 +50,8 @@ export const Todolist: FC<ITodolist> = ({
             </div>
             <ul>
                 {tasks.map((task) => {
-                    const onDeleteHandler = () => deleteTaskHandler(task.id)
-                    const onChangeStatusHandler = () => changeTaskStatus(task.id)
+                    const onDeleteHandler = () => deleteTaskHandler(task.id, id)
+                    const onChangeStatusHandler = () => changeTaskStatus(task.id, id)
                     return (
                         <li className={`${task.isDone && "is-done"}`} key={task.id}>
                             <input type="checkbox"

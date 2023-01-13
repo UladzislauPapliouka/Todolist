@@ -1,11 +1,19 @@
-interface ITodolist {
+interface ITodolistProps {
     title: string
+    id: string
     tasks: Array<ITask>
-    deleteTaskHandler: (taskIs: string) => void
+    deleteTaskHandler: (taskIs: string, todolistId: string) => void
     filter: Filter
-    setFilter: (filter: Filter) => void
-    addTask: (taskTitle: string) => void
-    changeTaskStatus: (taskId: string) => void
+    setFilter: (filter: Filter, todolistId: string) => void
+    addTask: (taskTitle: string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, todolistId: string) => void
+    deleteTodolist: (todolistId: string) => void
+}
+
+interface ITodolist {
+    id: string
+    title: string,
+    filter: Filter
 }
 
 interface ITask {
@@ -20,5 +28,5 @@ enum Filter {
     COMPLETED
 }
 
-export type {ITask, ITodolist}
+export type {ITask, ITodolistProps, ITodolist}
 export {Filter}
