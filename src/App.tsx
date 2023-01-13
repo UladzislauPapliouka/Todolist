@@ -1,26 +1,69 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Todolist} from "./Components/Todolist/Todolist";
+import {ITask} from "./types";
+
+
+const tasks1: Array<ITask> = [
+    {
+        title: "CSS",
+        id: "1",
+        isDone: false
+    },
+    {
+        title: "HTML",
+        id: "2",
+        isDone: true
+    },
+    {
+        title: "JS",
+        id: "3",
+        isDone: false
+    }
+]
+const tasks2: Array<ITask> = [
+    {
+        title: "Milk",
+        id: "1",
+        isDone: false
+    },
+    {
+        title: "Bread",
+        id: "2",
+        isDone: true
+    },
+    {
+        title: "Eggs",
+        id: "3",
+        isDone: false
+    }
+]
+const tasks3: Array<ITask> = [
+    {
+        title: "Workout",
+        id: "1",
+        isDone: false
+    },
+    {
+        title: "Pull ups",
+        id: "2",
+        isDone: true
+    },
+    {
+        title: "Sleep",
+        id: "3",
+        isDone: false
+    }
+]
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Todolist title={"What to learn"} tasks={tasks1}/>
+            <Todolist title={"What to buy"} tasks={tasks2}/>
+            <Todolist title={"What to do"} tasks={tasks3}/>
+        </div>
+    );
 }
 
 export default App;
