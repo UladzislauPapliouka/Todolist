@@ -1,6 +1,8 @@
 interface ITodolist {
     title: string
     tasks: Array<ITask>
+    deleteTaskHandler: (taskIs: string) => void
+    setFilter: (filter: Filter) => void
 }
 
 interface ITask {
@@ -9,4 +11,11 @@ interface ITask {
     id: string
 }
 
+enum Filter {
+    ALL,
+    ACTIVE,
+    COMPLETED
+}
+
 export type {ITask, ITodolist}
+export {Filter}
