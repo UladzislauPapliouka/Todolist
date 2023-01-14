@@ -8,6 +8,8 @@ interface ITodolistProps {
     addTask: (taskTitle: string, todolistId: string) => void
     changeTaskStatus: (taskId: string, todolistId: string) => void
     deleteTodolist: (todolistId: string) => void
+    changeTodolistTitle: (newTitle: string, todolistId: string) => void
+    changeTaskTitle: (newTitle: string, taskId: string, todolistId: string) => void
 }
 
 interface ITodolist {
@@ -28,5 +30,15 @@ enum Filter {
     COMPLETED
 }
 
-export type {ITask, ITodolistProps, ITodolist}
+interface IAddItemFormProps {
+    addItemCallback: ((itemTitle: string) => void)
+}
+
+interface IEditableSpanProps {
+    value: string,
+    changeItemCallback: (value: string) => void
+}
+
+export type {ITask, ITodolistProps, ITodolist, IAddItemFormProps, IEditableSpanProps}
 export {Filter}
+

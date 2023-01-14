@@ -3,6 +3,7 @@ import './App.css';
 import {Todolist} from "./Components/Todolist/Todolist";
 import {Filter, ITask, ITodolist} from "./types";
 import {v1} from "uuid"
+import {AddItemForm} from "./Components/AddItemForm/AddItemForm";
 
 function App() {
     const id1 = v1()
@@ -73,35 +74,58 @@ function App() {
         delete tasks[todolistId]
         setTasks({...tasks})
     }
-
+    const addTodolist = (todolistTitle: string) => {
+        const newId = v1()
+        const newTodolist: ITodolist = {
+            id: newId,
+            title: todolistTitle,
+            filter: Filter.ALL
+        }
+        setTodolists([newTodolist, ...todolists])
+        setTasks({...tasks, [newId]: []})
+    }
+    const changeTodolistTitle = (title: string, todolistId: string) => {
+        console.log(title)
+        const todolist = todolists.find(td => td.id === todolistId)
+        if (todolist) todolist.title = title
+        setTodolists([...todolists])
+    }
+    const changeTaskTitle = (newTitle: string, taskId: string, todolistId: string) => {
+        const task = tasks[todolistId].find(t => t.id === taskId)
+        if (task) task.title = newTitle
+        setTasks({...tasks, [todolistId]: [...tasks[todolistId]]})
+    }
     return (
         <div className="App">
-            {todolists.map(td => {
+            <AddItemForm addItemCallback={addTodolist}/>
+            {todolists.map(tl => {
                 let tasksForTodolist: Array<ITask>
-                switch (td.filter) {
+                switch (tl.filter) {
                     case Filter.ALL:
-                        tasksForTodolist = tasks[td.id]
+                        tasksForTodolist = tasks[tl.id]
                         break;
                     case Filter.ACTIVE:
-                        tasksForTodolist = tasks[td.id].filter(task => !task.isDone)
+                        tasksForTodolist = tasks[tl.id].filter(task => !task.isDone)
                         break;
                     case Filter.COMPLETED:
-                        tasksForTodolist = tasks[td.id].filter(task => task.isDone)
+                        tasksForTodolist = tasks[tl.id].filter(task => task.isDone)
                         break;
                     default:
-                        tasksForTodolist = tasks[td.id]
+                        tasksForTodolist = tasks[tl.id]
                 }
                 return (
-                    <Todolist title={td.title}
-                              id={td.id}
+                    <Todolist title={tl.title}
+                              id={tl.id}
                               tasks={tasksForTodolist}
-                              filter={td.filter}
+                              filter={tl.filter}
                               setFilter={changeFilter}
                               addTask={addTask}
                               deleteTaskHandler={deleteTask}
                               changeTaskStatus={changeTaskStatus}
-                              key={td.id}
+                              key={tl.id}
                               deleteTodolist={deleteTodolist}
+                              changeTodolistTitle={changeTodolistTitle}
+                              changeTaskTitle={changeTaskTitle}
                     />
                 )
             })}
