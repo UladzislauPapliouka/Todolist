@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import './App.css';
 import {Todolist} from "./Components/Todolist/Todolist";
 import {Filter, ITask, ITodolist} from "./types";
 import {v1} from "uuid"
