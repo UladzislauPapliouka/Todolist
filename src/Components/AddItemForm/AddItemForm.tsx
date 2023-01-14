@@ -1,5 +1,7 @@
 import React, {ChangeEvent, FC, KeyboardEvent, useState} from "react"
 import {IAddItemFormProps} from "../../types";
+import {IconButton, TextField} from "@mui/material";
+import {ControlPoint} from "@mui/icons-material";
 
 
 export const AddItemForm: FC<IAddItemFormProps> = ({
@@ -21,17 +23,20 @@ export const AddItemForm: FC<IAddItemFormProps> = ({
     const onKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
         event.key === "Enter" && onAddTaskHandler()
     }
-    const errorMessage = <span className={"error-message"}>Field is required</span>
+    const errorMessage = "Field is required"
     const [error, setError] = useState<boolean>(false)
     return (
         <div>
-            <input onKeyPress={onKeyPressHandler}
-                   value={newItemTitle}
-                   onChange={onChangeHandler}
-                   className={`${error && "error"}`}
+            <TextField onKeyPress={onKeyPressHandler}
+                       variant={"outlined"}
+                       label={"Type value"}
+                       error={error}
+                       helperText={error && errorMessage}
+                       value={newItemTitle}
+                       onChange={onChangeHandler}
+                       className={`${error && "error"}`}
             />
-            <button onClick={onAddTaskHandler}>+</button>
-            {error && errorMessage}
+            <IconButton color={"primary"} onClick={onAddTaskHandler}><ControlPoint/></IconButton>
         </div>
     )
 }

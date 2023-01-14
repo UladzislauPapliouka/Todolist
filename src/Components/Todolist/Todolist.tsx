@@ -2,6 +2,8 @@ import React, {FC} from "react";
 import {Filter, ITodolistProps} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
+import {Button, ButtonGroup, Checkbox, IconButton} from "@mui/material";
+import {Delete} from "@mui/icons-material";
 
 export const Todolist: FC<ITodolistProps> = ({
                                                  id,
@@ -32,33 +34,38 @@ export const Todolist: FC<ITodolistProps> = ({
     return (
         <div>
             <h3><EditableSpan value={title} changeItemCallback={changeTodolistTitleHandler}/>
-                <button onClick={deleteTodolistHandler}>X</button>
+                <IconButton onClick={deleteTodolistHandler}><Delete/></IconButton>
             </h3>
             <AddItemForm addItemCallback={addTaskHandler}/>
-            <ul>
+            <div>
                 {tasks.map((task) => {
                     const onDeleteHandler = () => deleteTaskHandler(task.id, id)
                     const onChangeStatusHandler = () => changeTaskStatus(task.id, id)
                     const changeTitle = (newTitle: string) => changeTaskTitleHandler(newTitle, task.id)
                     return (
-                        <li className={`${task.isDone && "is-done"}`} key={task.id}>
-                            <input type="checkbox"
-                                   onChange={onChangeStatusHandler}
-                                   checked={task.isDone}/>
+                        <div className={`${task.isDone && "is-done"}`} key={task.id}>
+                            <Checkbox
+                                onChange={onChangeStatusHandler}
+                                checked={task.isDone}/>
                             <EditableSpan value={task.title} changeItemCallback={changeTitle}/>
-                            <button onClick={onDeleteHandler}>X
-                            </button>
-                        </li>
+                            <IconButton onClick={onDeleteHandler}>
+                                <Delete/>
+                            </IconButton>
+                        </div>
                     )
                 })}
-            </ul>
+            </div>
             <div>
-                <button className={`${filter === Filter.ALL && "active-filter"}`} onClick={setFilterAll}>All</button>
-                <button className={`${filter === Filter.ACTIVE && "active-filter"}`} onClick={setFilterACTIVE}>Active
-                </button>
-                <button className={`${filter === Filter.COMPLETED && "active-filter"}`}
-                        onClick={setFilterCOMPLETED}>Completed
-                </button>
+                <ButtonGroup>
+                    <Button variant={filter === Filter.ALL ? "contained" : undefined}
+                            onClick={setFilterAll}>All</Button>
+                    <Button color={"secondary"} variant={filter === Filter.ACTIVE ? "contained" : undefined}
+                            onClick={setFilterACTIVE}>Active
+                    </Button>
+                    <Button color={"warning"} variant={filter === Filter.COMPLETED ? "contained" : undefined}
+                            onClick={setFilterCOMPLETED}>Completed
+                    </Button>
+                </ButtonGroup>
             </div>
         </div>
     )
