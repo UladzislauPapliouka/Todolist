@@ -1,35 +1,48 @@
 import React, {FC} from "react";
-import {Filter, ITodolistProps} from "../../types";
+import {Filter, ITask, ITodolistProps} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Button, ButtonGroup, Checkbox, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../Store/Store";
+import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC} from "../../Store/Reducers/tasksReducer";
 
 export const Todolist: FC<ITodolistProps> = ({
                                                  id,
                                                  title,
-                                                 tasks,
-                                                 deleteTaskHandler,
+
                                                  setFilter,
-                                                 addTask,
-                                                 changeTaskStatus,
                                                  filter,
                                                  deleteTodolist,
                                                  changeTodolistTitle,
-                                                 changeTaskTitle
+
                                              }) => {
+    const tasks = useSelector((store: RootState) => store.tasks[id])
+    const dispatch = useDispatch<AppDispatch>()
     const setFilterAll = () => setFilter(Filter.ALL, id)
     const setFilterACTIVE = () => setFilter(Filter.ACTIVE, id)
     const setFilterCOMPLETED = () => setFilter(Filter.COMPLETED, id)
     const deleteTodolistHandler = () => deleteTodolist(id)
     const addTaskHandler = (taskTitle: string) => {
-        addTask(taskTitle, id)
+        dispatch(addTaskAC(taskTitle, id))
     }
     const changeTodolistTitleHandler = (newTitle: string) => {
         changeTodolistTitle(newTitle, id)
     }
-    const changeTaskTitleHandler = (newTitle: string, taskId: string) => {
-        changeTaskTitle(newTitle, taskId, id)
+    let tasksForTodolist: Array<ITask>
+    switch (filter) {
+        case Filter.ALL:
+            tasksForTodolist = tasks
+            break;
+        case Filter.ACTIVE:
+            tasksForTodolist = tasks.filter(task => !task.isDone)
+            break;
+        case Filter.COMPLETED:
+            tasksForTodolist = tasks.filter(task => task.isDone)
+            break;
+        default:
+            tasksForTodolist = tasks
     }
     return (
         <div>
@@ -38,10 +51,10 @@ export const Todolist: FC<ITodolistProps> = ({
             </h3>
             <AddItemForm addItemCallback={addTaskHandler}/>
             <div>
-                {tasks.map((task) => {
-                    const onDeleteHandler = () => deleteTaskHandler(task.id, id)
-                    const onChangeStatusHandler = () => changeTaskStatus(task.id, id)
-                    const changeTitle = (newTitle: string) => changeTaskTitleHandler(newTitle, task.id)
+                {tasksForTodolist.map((task) => {
+                    const onDeleteHandler = () => dispatch(removeTaskAC(task.id, id))
+                    const onChangeStatusHandler = () => dispatch(changeTaskStatusAC(task.id, id))
+                    const changeTitle = (newTitle: string) => dispatch(renameTaskAC(newTitle, task.id, id))
                     return (
                         <div className={`${task.isDone && "is-done"}`} key={task.id}>
                             <Checkbox

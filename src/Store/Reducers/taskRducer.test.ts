@@ -1,6 +1,6 @@
 import {v1} from "uuid";
 import {useState} from "react";
-import {Filter, ITask, ITodolist} from "../types";
+import {Filter, ITask, ITodolist} from "../../types";
 import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC, tasksReducer} from "./tasksReducer";
 import {addTodolistAC, removeTodolistAC, todolistsReducer} from "./todolistsReducer";
 

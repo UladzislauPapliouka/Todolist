@@ -1,5 +1,4 @@
-import {Filter, ITodolist} from "../types";
-import {v1} from "uuid";
+import {Filter, ITodolist} from "../../types";
 
 type ActionType = RemoveTodolistAction | AddTodolistAction | RenameTodolistAction | ChangeTodolistFilterAction
 export type RemoveTodolistAction = {
@@ -18,7 +17,7 @@ type ChangeTodolistFilterAction = {
     type: "CHANGE-TODOLIST-FILTER",
     payload: { todolistId: string, todolistFilter: Filter }
 }
-export const todolistsReducer = (state: Array<ITodolist>, action: ActionType): Array<ITodolist> => {
+export const todolistsReducer = (state: Array<ITodolist> = [], action: ActionType): Array<ITodolist> => {
     switch (action.type) {
         case "REMOVE-TODOLIST" : {
             return [...state.filter(tl => tl.id !== action.payload.todolistId)]
@@ -32,17 +31,17 @@ export const todolistsReducer = (state: Array<ITodolist>, action: ActionType): A
             return [...state, newTodolist]
         }
         case "RENAME-TODOLIST": {
-            const todolist: ITodolist = state.find(tl => tl.id == action.payload.todolistId) as ITodolist
+            const todolist: ITodolist = state.find(tl => tl.id === action.payload.todolistId) as ITodolist
             if (todolist) todolist.title = action.payload.todolistTitle
             return [...state]
         }
         case "CHANGE-TODOLIST-FILTER": {
-            const todolist: ITodolist = state.find(tl => tl.id == action.payload.todolistId) as ITodolist
+            const todolist: ITodolist = state.find(tl => tl.id === action.payload.todolistId) as ITodolist
             if (todolist) todolist.filter = action.payload.todolistFilter
             return [...state]
         }
         default:
-            throw new Error("Unknown action type")
+            return state
     }
 }
 

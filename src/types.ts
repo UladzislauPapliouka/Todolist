@@ -1,15 +1,10 @@
 interface ITodolistProps {
     title: string
     id: string
-    tasks: Array<ITask>
-    deleteTaskHandler: (taskIs: string, todolistId: string) => void
     filter: Filter
     setFilter: (filter: Filter, todolistId: string) => void
-    addTask: (taskTitle: string, todolistId: string) => void
-    changeTaskStatus: (taskId: string, todolistId: string) => void
     deleteTodolist: (todolistId: string) => void
     changeTodolistTitle: (newTitle: string, todolistId: string) => void
-    changeTaskTitle: (newTitle: string, taskId: string, todolistId: string) => void
 }
 
 interface ITodolist {

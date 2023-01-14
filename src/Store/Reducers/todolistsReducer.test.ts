@@ -1,5 +1,5 @@
 import {v1} from "uuid";
-import {Filter, ITodolist} from "../types";
+import {Filter, ITodolist} from "../../types";
 import {
     addTodolistAC,
     changeTodolistFilterAC,
