@@ -49,7 +49,6 @@ function App() {
             }
         ]
     })
-    console.log(tasks)
     const changeFilter = (filter: Filter, todolistId: string) => {
         const todolist = todolists.find(td => td.id === todolistId)
         if (todolist) todolist.filter = filter

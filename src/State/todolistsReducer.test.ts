@@ -1,10 +1,10 @@
 import {v1} from "uuid";
 import {Filter, ITodolist} from "../types";
 import {
-    AddTodolistAC,
-    ChangeTodolistFilterAC,
-    RemoveTodolistAC,
-    RenameTodolistAC,
+    addTodolistAC,
+    changeTodolistFilterAC,
+    removeTodolistAC,
+    renameTodolistAC,
     todolistsReducer
 } from "./todolistsReducer";
 
@@ -16,7 +16,7 @@ test('correct todolist should be removed', () => {
         {id: todolistId2, title: "1", filter: Filter.ALL},
     ]
 
-    const endState = todolistsReducer(startState, RemoveTodolistAC(todolistId1))
+    const endState = todolistsReducer(startState, removeTodolistAC(todolistId1))
 
     expect(endState.length).toBe(1)
     expect(endState[0].id).toBe(todolistId2)
@@ -28,7 +28,8 @@ test('correct todolist should be added', () => {
         {id: todolistId1, title: "1", filter: Filter.ALL},
         {id: todolistId2, title: "2", filter: Filter.ALL},
     ]
-    const endState = todolistsReducer(startState, AddTodolistAC("newTitle"))
+    const newID = v1()
+    const endState = todolistsReducer(startState, addTodolistAC("newTitle", newID))
 
     expect(endState.length).toBe(3)
     expect(endState[2].title).toBe("newTitle")
@@ -43,7 +44,7 @@ test('correct todolist should be renamed', () => {
         {id: todolistId2, title: "2", filter: Filter.ALL},
     ]
 
-    const endState = todolistsReducer(startState, RenameTodolistAC("newTitle", todolistId1))
+    const endState = todolistsReducer(startState, renameTodolistAC("newTitle", todolistId1))
 
     expect(endState.length).toBe(2)
     expect(endState[0].id).toBe(todolistId1)
@@ -60,7 +61,7 @@ test("correct filter of todolist  should be changed", () => {
         {id: todolistId1, title: "1", filter: Filter.ALL},
         {id: todolistId2, title: "2", filter: Filter.ALL},
     ]
-    const endState = todolistsReducer(startState, ChangeTodolistFilterAC(Filter.ACTIVE, todolistId1))
+    const endState = todolistsReducer(startState, changeTodolistFilterAC(Filter.ACTIVE, todolistId1))
 
     expect(endState.length).toBe(2)
     expect(endState[0].id).toBe(todolistId1)
