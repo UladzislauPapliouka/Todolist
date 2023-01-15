@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Todolist} from "./Components/Todolist/Todolist";
 import {Filter} from "./types";
 import {v1} from "uuid"
@@ -14,25 +14,24 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "./Store/Store";
 
-function AppWithreducer() {
+function App() {
     const todolists = useSelector((store: RootState) => store.todolists)
 
     const dispatch = useDispatch<AppDispatch>()
-    const changeFilter = (filter: Filter, todolistId: string) => {
+    const changeFilter = useCallback((filter: Filter, todolistId: string) => {
         dispatch(changeTodolistFilterAC(filter, todolistId))
-    }
-
-    const deleteTodolist = (todolistId: string) => {
+    }, [dispatch])
+    const deleteTodolist = useCallback((todolistId: string) => {
         const action = removeTodolistAC(todolistId)
         dispatch(action)
-    }
-    const addTodolist = (todolistTitle: string) => {
+    }, [dispatch])
+    const addTodolist = useCallback((todolistTitle: string) => {
         const action = addTodolistAC(todolistTitle, v1())
         dispatch(action)
-    }
-    const changeTodolistTitle = (title: string, todolistId: string) => {
+    }, [dispatch])
+    const changeTodolistTitle = useCallback((title: string, todolistId: string) => {
         dispatch(renameTodolistAC(title, todolistId))
-    }
+    }, [dispatch])
 
     return (
         <div className="App">
@@ -71,4 +70,4 @@ function AppWithreducer() {
     );
 }
 
-export default AppWithreducer;
+export default App;

@@ -98,9 +98,11 @@ export const tasksReducer = (state: { [Key: string]: Array<ITask> } = {}, action
         }
         case "RENAME-TASK": {
             const stageCopy = {...state}
-            const tasks = stageCopy[action.payload.todolistId]
-            const task = tasks.find(t => t.id === action.payload.taskId)
-            if (task) task.title = action.payload.taskTitle
+            let tasks = stageCopy[action.payload.todolistId]
+            stageCopy[action.payload.todolistId] = tasks.map(t => t.id === action.payload.taskId ? {
+                ...t,
+                title: action.payload.taskTitle
+            } : t)
             return stageCopy
         }
         case "REMOVE-TODOLIST": {
