@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from "react";
-import {Filter, ITask, ITodolistProps} from "../../types";
+import {Filter, ITask, ITodolistProps, TaskStatuses} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
@@ -40,10 +40,10 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
             tasksForTodolist = tasks
             break;
         case Filter.ACTIVE:
-            tasksForTodolist = tasks.filter(task => !task.isDone)
+            tasksForTodolist = tasks.filter(task => task.status === TaskStatuses.InProgress)
             break;
         case Filter.COMPLETED:
-            tasksForTodolist = tasks.filter(task => task.isDone)
+            tasksForTodolist = tasks.filter(task => task.status === TaskStatuses.Completed)
             break;
         default:
             tasksForTodolist = tasks
@@ -60,7 +60,10 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
 
                     return (
                         <Task key={task.id} onChangeStatus={onChangeStatusHandler} changeTitle={changeTitle}
-                              onDelete={onDeleteHandler} title={task.title} isDone={task.isDone} id={task.id}/>
+                              onDelete={onDeleteHandler} title={task.title} status={task.status} id={task.id}
+                              startDate={task.startDate} addedDate={task.addedDate} description={task.description}
+                              deadline={task.deadline} order={task.order} priority={task.priority}
+                              todoListId={task.todoListId}/>
                     )
                 })}
             </div>

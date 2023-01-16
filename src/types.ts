@@ -7,16 +7,28 @@ interface ITodolistProps {
     changeTodolistTitle: (newTitle: string, todolistId: string) => void
 }
 
-interface ITodolist {
+interface ITodolistAPI {
     id: string
-    title: string,
+    title: string
+    addedDate: string
+    order: number
+}
+
+interface ITodolist extends ITodolistAPI {
     filter: Filter
 }
 
 interface ITask {
+    description: string
     title: string
-    isDone: boolean
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
     id: string
+    todoListId: string
+    order: number
+    addedDate: string
 }
 
 enum Filter {
@@ -34,6 +46,56 @@ interface IEditableSpanProps {
     changeItemCallback: (value: string) => void
 }
 
-export type {ITask, ITodolistProps, ITodolist, IAddItemFormProps, IEditableSpanProps}
-export {Filter}
+type  ResponseType<D = {}> = {
+    resultCode: number,
+    messages: Array<string>
+    data: D
+}
+
+type TaskAPIResponseType = {
+    items: ITask[],
+    totalCount: number,
+    error: string
+}
+type UpdateDateType = {
+    title: string
+    description: string
+    completed: boolean
+    status: number
+    priority: number
+    startDate: string
+    deadline: string
+}
+
+enum TaskStatuses {
+    New,
+    InProgress,
+    Completed,
+    Draft
+}
+
+enum TaskPriorities {
+    Low,
+    Middle,
+    High,
+    Urgently,
+    Later
+}
+
+export type {
+    ITask,
+    ITodolistProps,
+    ITodolist,
+    IAddItemFormProps,
+    IEditableSpanProps,
+    ITodolistAPI,
+    ResponseType,
+    UpdateDateType,
+    TaskAPIResponseType
+}
+export {
+    Filter,
+    TaskStatuses,
+    TaskPriorities
+}
 

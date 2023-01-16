@@ -8,12 +8,14 @@ import {
     todolistsReducer
 } from "./todolistsReducer";
 
+//TODO: Fix test correctly
+
 test('correct todolist should be removed', () => {
     const todolistId1 = v1()
     const todolistId2 = v1()
     const startState: Array<ITodolist> = [
-        {id: todolistId1, title: "1", filter: Filter.ALL},
-        {id: todolistId2, title: "1", filter: Filter.ALL},
+        {id: todolistId1, title: "1", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
+        {id: todolistId2, title: "1", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
     ]
 
     const endState = todolistsReducer(startState, removeTodolistAC(todolistId1))
@@ -25,8 +27,8 @@ test('correct todolist should be added', () => {
     const todolistId1 = v1()
     const todolistId2 = v1()
     const startState: Array<ITodolist> = [
-        {id: todolistId1, title: "1", filter: Filter.ALL},
-        {id: todolistId2, title: "2", filter: Filter.ALL},
+        {id: todolistId1, title: "1", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
+        {id: todolistId2, title: "1", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
     ]
     const newID = v1()
     const endState = todolistsReducer(startState, addTodolistAC("newTitle", newID))
@@ -40,8 +42,8 @@ test('correct todolist should be renamed', () => {
     const todolistId1 = v1()
     const todolistId2 = v1()
     const startState: Array<ITodolist> = [
-        {id: todolistId1, title: "1", filter: Filter.ALL},
-        {id: todolistId2, title: "2", filter: Filter.ALL},
+        {id: todolistId1, title: "1", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
+        {id: todolistId2, title: "2", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
     ]
 
     const endState = todolistsReducer(startState, renameTodolistAC("newTitle", todolistId1))
@@ -58,8 +60,8 @@ test("correct filter of todolist  should be changed", () => {
     const todolistId1 = v1()
     const todolistId2 = v1()
     const startState: Array<ITodolist> = [
-        {id: todolistId1, title: "1", filter: Filter.ALL},
-        {id: todolistId2, title: "2", filter: Filter.ALL},
+        {id: todolistId1, title: "1", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
+        {id: todolistId2, title: "2", filter: Filter.ALL, addedDate: (new Date()).toTimeString(), order: 0},
     ]
     const endState = todolistsReducer(startState, changeTodolistFilterAC(Filter.ACTIVE, todolistId1))
 

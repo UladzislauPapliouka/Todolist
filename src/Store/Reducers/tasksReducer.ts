@@ -1,4 +1,4 @@
-import {ITask} from "../../types";
+import {ITask, TaskPriorities, TaskStatuses} from "../../types";
 import {v1} from "uuid";
 import {AddTodolistAction, RemoveTodolistAction} from "./todolistsReducer";
 
@@ -73,9 +73,16 @@ export const tasksReducer = (state: { [Key: string]: Array<ITask> } = {}, action
     switch (action.type) {
         case "ADD-TASK": {
             const task: ITask = {
-                id: v1(),
+                description: "string",
                 title: action.payload.taskTitle,
-                isDone: false
+                status: TaskStatuses.InProgress,
+                priority: TaskPriorities.Later,
+                startDate: "string",
+                deadline: "string",
+                id: v1(),
+                todoListId: "string",
+                order: 0,
+                addedDate: "string",
             }
             return {...state, [action.payload.todolistId]: [...state[action.payload.todolistId], task]}
         }
@@ -90,7 +97,7 @@ export const tasksReducer = (state: { [Key: string]: Array<ITask> } = {}, action
             let tasks = stateCopy[action.payload.todolistId]
             stateCopy[action.payload.todolistId] = tasks.map(t => t.id === action.payload.taskId ? {
                 ...t,
-                isDone: !t.isDone
+                status: t.status === TaskStatuses.Completed ? TaskStatuses.InProgress : TaskStatuses.Completed
             } : t)
             return stateCopy
 

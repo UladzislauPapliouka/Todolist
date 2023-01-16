@@ -26,7 +26,9 @@ export const todolistsReducer = (state: Array<ITodolist> = [], action: ActionTyp
             const newTodolist: ITodolist = {
                 id: action.payload.todolistId,
                 title: action.payload.todolistTitle,
-                filter: Filter.ALL
+                filter: Filter.ALL,
+                order: 0,
+                addedDate: (new Date()).toTimeString()
             }
             return [...state, newTodolist]
         }

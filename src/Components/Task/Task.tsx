@@ -2,7 +2,7 @@ import {Checkbox, IconButton} from "@mui/material";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
 import React, {FC, useCallback} from "react";
-import {ITask} from "../../types";
+import {ITask, TaskStatuses} from "../../types";
 
 interface TaskProps extends ITask {
     onChangeStatus: (taskId: string) => void
@@ -10,16 +10,30 @@ interface TaskProps extends ITask {
     onDelete: (taskId: string) => void
 }
 
-export const Task: FC<TaskProps> = React.memo(({id, onChangeStatus, changeTitle, title, onDelete, isDone}) => {
+export const Task: FC<TaskProps> = React.memo(({
+                                                   id,
+                                                   onChangeStatus,
+                                                   changeTitle,
+                                                   title,
+                                                   onDelete,
+                                                   status,
+                                                   todoListId,
+                                                   priority,
+                                                   order,
+                                                   description,
+                                                   deadline,
+                                                   addedDate,
+                                                   startDate
+                                               }) => {
     const onChangeStatusHandler = () => onChangeStatus(id)
     const changeTitleHandler = useCallback((newTitle: string) => changeTitle(newTitle, id), [id, changeTitle])
     const onDeleteHandler = () => onDelete(id)
     console.log('Task is called')
     return (
-        <div className={`${isDone && "is-done"}`} key={id}>
+        <div className={`${status === TaskStatuses.Completed && "is-done"}`} key={id}>
             <Checkbox
                 onChange={onChangeStatusHandler}
-                checked={isDone}/>
+                checked={status === TaskStatuses.Completed}/>
             <EditableSpan value={title} changeItemCallback={changeTitleHandler}/>
             <IconButton onClick={onDeleteHandler}>
                 <Delete/>
