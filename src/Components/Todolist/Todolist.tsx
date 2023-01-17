@@ -1,12 +1,16 @@
-import React, {FC, useCallback} from "react";
-import {Filter, ITask, ITodolistProps, TaskStatuses} from "../../types";
+import React, {FC, useCallback, useEffect} from "react";
+import {Filter, ITask, ITodolistProps, TaskStatuses, UpdateDateType} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../../Store/Store";
-import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC} from "../../Store/Reducers/tasksReducer";
+import {RootState} from "../../Store/Store";
+import {
+    addTaskTC,
+    deleteTaskTC,
+    setTaskTC, updateTaskTC
+} from "../../Store/Reducers/tasksReducer";
 import {Task} from "../Task/Task";
 
 export const Todolist: FC<ITodolistProps> = React.memo(({
@@ -20,27 +24,30 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
 
                                                         }) => {
     const tasks = useSelector((store: RootState) => store.tasks[id])
-    const dispatch = useDispatch<AppDispatch>()
+    const dispatch = useDispatch()
     const setFilterAll = useCallback(() => setFilter(Filter.ALL, id), [setFilter, id])
     const setFilterACTIVE = useCallback(() => setFilter(Filter.ACTIVE, id), [setFilter, id])
     const setFilterCOMPLETED = useCallback(() => setFilter(Filter.COMPLETED, id), [setFilter, id])
     const deleteTodolistHandler = () => deleteTodolist(id)
     const addTaskHandler = useCallback((taskTitle: string) => {
-        dispatch(addTaskAC(taskTitle, id))
+        // @ts-ignore
+        dispatch(addTaskTC(taskTitle, id))
     }, [id, dispatch])
     const changeTodolistTitleHandler = useCallback((newTitle: string) => {
         changeTodolistTitle(newTitle, id)
     }, [id, changeTodolistTitle])
-    const onDeleteHandler = useCallback((taskId: string) => dispatch(removeTaskAC(taskId, id)), [dispatch, id])
-    const onChangeStatusHandler = useCallback((taskId: string) => dispatch(changeTaskStatusAC(taskId, id)), [dispatch, id])
-    const changeTitle = useCallback((newTitle: string, taskId: string) => dispatch(renameTaskAC(newTitle, taskId, id)), [dispatch, id])
+    // @ts-ignore
+    const onDeleteHandler = useCallback((taskId: string) => dispatch(deleteTaskTC(taskId, id)), [dispatch, id])
+    // const onChangeStatusHandler = useCallback((taskId: string) => dispatch(changeTaskStatusAC(taskId, id)), [dispatch, id])
+    // @ts-ignore
+    const updateTitle = useCallback((newTaskInfo: UpdateDateType, taskId: string) => dispatch(updateTaskTC(newTaskInfo, taskId, id)), [dispatch, id])
     let tasksForTodolist: Array<ITask>
     switch (filter) {
         case Filter.ALL:
             tasksForTodolist = tasks
             break;
         case Filter.ACTIVE:
-            tasksForTodolist = tasks.filter(task => task.status === TaskStatuses.InProgress)
+            tasksForTodolist = tasks.filter(task => task.status !== TaskStatuses.Completed)
             break;
         case Filter.COMPLETED:
             tasksForTodolist = tasks.filter(task => task.status === TaskStatuses.Completed)
@@ -49,6 +56,11 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
             tasksForTodolist = tasks
     }
     console.log("Todolist is called", id)
+    useEffect(() => {
+
+        // @ts-ignore
+        dispatch(setTaskTC(id))
+    }, [dispatch, id])
     return (
         <div>
             <h3><EditableSpan value={title} changeItemCallback={changeTodolistTitleHandler}/>
@@ -59,7 +71,7 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
                 {tasksForTodolist.map((task) => {
 
                     return (
-                        <Task key={task.id} onChangeStatus={onChangeStatusHandler} changeTitle={changeTitle}
+                        <Task key={task.id} updateTask={updateTitle}
                               onDelete={onDeleteHandler} title={task.title} status={task.status} id={task.id}
                               startDate={task.startDate} addedDate={task.addedDate} description={task.description}
                               deadline={task.deadline} order={task.order} priority={task.priority}

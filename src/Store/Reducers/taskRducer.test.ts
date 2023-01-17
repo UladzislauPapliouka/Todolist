@@ -1,7 +1,7 @@
 import {v1} from "uuid";
-import {ITask, ITodolist, TaskPriorities, TaskStatuses} from "../../types";
-import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC, tasksReducer} from "./tasksReducer";
-import {addTodolistAC, removeTodolistAC, todolistsReducer} from "./todolistsReducer";
+import {ITask, ITodolist, ITodolistAPI, TaskPriorities, TaskStatuses} from "../../types";
+import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC, setTaskAC, tasksReducer} from "./tasksReducer";
+import {addTodolistAC, removeTodolistAC, setTodolistAC, todolistsReducer} from "./todolistsReducer";
 
 //TODO: Fix test correctly
 
@@ -451,8 +451,6 @@ test("correct todolist should be removed", () => {
     }
 )
 test("correct todolist should be added", () => {
-        const id1 = v1()
-        const id2 = v1()
         const startState: { [Key: string]: Array<ITask> } = {}
         const startStateTL: Array<ITodolist> = []
         const newID = v1()
@@ -463,3 +461,59 @@ test("correct todolist should be added", () => {
         expect(Object.keys(endState)[0]).toBe(endStateTL[0].id)
     }
 )
+test("todolist's task's field should be setted", () => {
+    const todolistId1 = v1()
+    const todolistId2 = v1()
+    const addingTodolist: Array<ITodolistAPI> = [
+        {id: todolistId1, title: "1", addedDate: (new Date()).toTimeString(), order: 0},
+        {id: todolistId2, title: "2", addedDate: (new Date()).toTimeString(), order: 0},
+    ]
+    const startState: { [Key: string]: Array<ITask> } = {}
+    const endState = tasksReducer(startState, setTodolistAC(addingTodolist))
+    expect(Object.keys(endState).length).toBe(2)
+
+})
+test(" tasks should be setted", () => {
+    const addinTasks :Array<ITask> =[
+        {
+            description: "string",
+            title: "string",
+            status: TaskStatuses.New,
+            priority: TaskPriorities.Later,
+            startDate: "string",
+            deadline: "string",
+            id: "string",
+            todoListId: "string",
+            order: 0,
+            addedDate: "string",
+        },
+        {
+            description: "string",
+            title: "string",
+            status: TaskStatuses.New,
+            priority: TaskPriorities.Later,
+            startDate: "string",
+            deadline: "string",
+            id: "string",
+            todoListId: "string",
+            order: 0,
+            addedDate: "string",
+        },
+        {
+            description: "string",
+            title: "string",
+            status: TaskStatuses.New,
+            priority: TaskPriorities.Later,
+            startDate: "string",
+            deadline: "string",
+            id: "string",
+            todoListId: "string",
+            order: 0,
+            addedDate: "string",
+        },
+    ]
+    const startState: { [Key: string]: Array<ITask> } = {"1":[]}
+    const endState = tasksReducer(startState, setTaskAC(addinTasks,"1"))
+    expect(endState["1"].length).toBe(3)
+
+})

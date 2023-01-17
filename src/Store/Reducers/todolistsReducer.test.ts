@@ -1,10 +1,10 @@
 import {v1} from "uuid";
-import {Filter, ITodolist} from "../../types";
+import {Filter, ITodolist, ITodolistAPI} from "../../types";
 import {
     addTodolistAC,
     changeTodolistFilterAC,
     removeTodolistAC,
-    renameTodolistAC,
+    renameTodolistAC, setTodolistAC,
     todolistsReducer
 } from "./todolistsReducer";
 
@@ -73,4 +73,17 @@ test("correct filter of todolist  should be changed", () => {
     expect(endState[0].filter).toBe(Filter.ACTIVE)
     expect(endState[1].filter).toBe(Filter.ALL)
 
+})
+
+test("todolist should be setted", () => {
+    const todolistId1 = v1()
+    const todolistId2 = v1()
+    const addingTodolist: Array<ITodolistAPI> = [
+        {id: todolistId1, title: "1", addedDate: (new Date()).toTimeString(), order: 0},
+        {id: todolistId2, title: "2", addedDate: (new Date()).toTimeString(), order: 0},
+    ]
+    const startState: Array<ITodolist> = []
+    const endState = todolistsReducer(startState, setTodolistAC(addingTodolist))
+    expect(endState.length).toBe(2)
+    expect(endState[0].filter).toBe(Filter.ALL)
 })

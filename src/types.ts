@@ -1,3 +1,12 @@
+import {
+    AddTodolistAction,
+    changeTodolistFilterAC,
+    RemoveTodolistAction,
+    renameTodolistAC,
+    SetTodolistsAction
+} from "./Store/Reducers/todolistsReducer";
+import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC, setTaskAC} from "./Store/Reducers/tasksReducer";
+
 interface ITodolistProps {
     title: string
     id: string
@@ -60,7 +69,6 @@ type TaskAPIResponseType = {
 type UpdateDateType = {
     title: string
     description: string
-    completed: boolean
     status: number
     priority: number
     startDate: string
@@ -82,6 +90,28 @@ enum TaskPriorities {
     Later
 }
 
+
+type TaskActionType =
+    | ReturnType<typeof addTaskAC>
+    | ReturnType<typeof removeTaskAC>
+    | ReturnType<typeof changeTaskStatusAC>
+    | ReturnType<typeof renameTaskAC>
+    | AddTodolistAction
+    | RemoveTodolistAction
+    | SetTodolistsAction
+    | ReturnType<typeof setTaskAC>
+type TodolistActionType =
+    | RemoveTodolistAction
+    | AddTodolistAction
+    | ReturnType<typeof renameTodolistAC>
+    | ReturnType<typeof changeTodolistFilterAC>
+    | SetTodolistsAction
+
+interface TaskProps extends ITask {
+    updateTask: (newTaskInfo: UpdateDateType, taskId: string) => void
+    onDelete: (taskId: string) => void
+}
+
 export type {
     ITask,
     ITodolistProps,
@@ -91,7 +121,10 @@ export type {
     ITodolistAPI,
     ResponseType,
     UpdateDateType,
-    TaskAPIResponseType
+    TaskAPIResponseType,
+    TaskActionType,
+    TodolistActionType,
+    TaskProps,
 }
 export {
     Filter,

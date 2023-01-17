@@ -1,19 +1,13 @@
 import {Checkbox, IconButton} from "@mui/material";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
-import React, {FC, useCallback} from "react";
-import {ITask, TaskStatuses} from "../../types";
-
-interface TaskProps extends ITask {
-    onChangeStatus: (taskId: string) => void
-    changeTitle: (newTitle: string, taskId: string) => void
-    onDelete: (taskId: string) => void
-}
+import React, {FC, useCallback, useMemo} from "react";
+import {ITask, TaskProps, TaskStatuses} from "../../types";
 
 export const Task: FC<TaskProps> = React.memo(({
                                                    id,
-                                                   onChangeStatus,
-                                                   changeTitle,
+
+                                                   updateTask,
                                                    title,
                                                    onDelete,
                                                    status,
@@ -25,8 +19,29 @@ export const Task: FC<TaskProps> = React.memo(({
                                                    addedDate,
                                                    startDate
                                                }) => {
-    const onChangeStatusHandler = () => onChangeStatus(id)
-    const changeTitleHandler = useCallback((newTitle: string) => changeTitle(newTitle, id), [id, changeTitle])
+    const taskInfo: ITask = useMemo(() => ({
+        id,
+        title,
+        todoListId,
+        priority, order,
+        description, deadline,
+        addedDate,
+        startDate, status
+    }), [id,
+        title,
+        todoListId,
+        priority, order,
+        description, deadline,
+        addedDate,
+        startDate, status])
+    const onChangeStatusHandler = () => updateTask({
+        ...taskInfo,
+        status: status === TaskStatuses.Completed ? TaskStatuses.InProgress : TaskStatuses.Completed
+    }, id)
+    const changeTitleHandler = useCallback((newTitle: string) => updateTask({
+        ...taskInfo,
+        title: newTitle
+    }, id), [id, updateTask, taskInfo])
     const onDeleteHandler = () => onDelete(id)
     console.log('Task is called')
     return (
