@@ -16,13 +16,14 @@ import {Task} from "../Task/Task";
 export const Todolist: FC<ITodolistProps> = React.memo(({
                                                             id,
                                                             title,
-
                                                             setFilter,
                                                             filter,
                                                             deleteTodolist,
                                                             changeTodolistTitle,
 
                                                         }) => {
+    //TODO: refactor to get todolist object in props
+    //TODO: disable todolist while deleting
     const tasks = useSelector((store: RootState) => store.tasks[id])
     const dispatch = useDispatch()
     const setFilterAll = useCallback(() => setFilter(Filter.ALL, id), [setFilter, id])

@@ -1,8 +1,16 @@
-import {ITask, TaskActionType, TaskPriorities, TaskStatuses, UpdateDateType} from "../../types";
+import {
+    AppStatuses,
+    ITask,
+    TaskActionType,
+    TaskPriorities,
+    TaskStatuses,
+    UpdateDateType
+} from "../../types";
 import {v1} from "uuid";
 import {Dispatch} from "redux";
 import {tasksAPI} from "../../DAL/tasksAPI";
-
+import {AppActionType, setErrorAC, setStatusAC} from "./AppReducer";
+//TODO: Add error handling
 //actions
 export const addTaskAC = (title: string, todolistId: string) => ({
     type: "ADD-TASK",
@@ -41,27 +49,51 @@ export const setTaskAC = (tasks: Array<ITask>, todolistId: string) => ({
     }
 } as const)
 //thunks
-export const setTaskTC = (todolistId: string) => (dispatch: Dispatch<TaskActionType>) => {
+export const setTaskTC = (todolistId: string) => (dispatch: ThunkDispatch) => {
+
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     tasksAPI.getTasks(todolistId).then(res => {
+        // @ts-ignore
+        dispatch(setStatusAC(AppStatuses.Idle))
         dispatch(setTaskAC(res.data.items, todolistId))
     })
 }
-export const deleteTaskTC = (taskID: string, todolistId: string) => (dispatch: Dispatch<TaskActionType>) => {
+export const deleteTaskTC = (taskID: string, todolistId: string) => (dispatch: ThunkDispatch) => {
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     tasksAPI.deleteTasks(todolistId, taskID)
         .then(res => { // @ts-ignore
             dispatch(setTaskTC(todolistId))
+            // @ts-ignore
+            dispatch(setStatusAC(AppStatuses.Idle))
         })
 }
-export const addTaskTC = (taskTitle: string, todolistId: string) => (dispatch: Dispatch<TaskActionType>) => {
+export const addTaskTC = (taskTitle: string, todolistId: string) => (dispatch: ThunkDispatch) => {
+    dispatch(setStatusAC(AppStatuses.Loading))
     tasksAPI.createTasks(todolistId, taskTitle)
         .then(res => {
-            // @ts-ignore
-            dispatch(setTaskTC(todolistId))
+            if (res.data.resultCode === 1) {
+                // @ts-ignore
+                dispatch(setErrorAC(res.data.messages[0]))
+                dispatch(setStatusAC(AppStatuses.Idle))
+                return
+            } else {
+                dispatch(setStatusAC(AppStatuses.Idle))
+                // @ts-ignore
+                dispatch(setTaskTC(todolistId))
+            }
+
+
         })
 }
-export const updateTaskTC = (newTaskInfo: UpdateDateType, taskId: string, todolistId: string) => (dispatch: Dispatch<TaskActionType>) => {
+export const updateTaskTC = (newTaskInfo: UpdateDateType, taskId: string, todolistId: string) => (dispatch: ThunkDispatch) => {
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     tasksAPI.updateTasks(todolistId, taskId, newTaskInfo)
         .then(res => {
+            // @ts-ignore
+            dispatch(setStatusAC(AppStatuses.Idle))
             // @ts-ignore
             dispatch(setTaskTC(todolistId))
         })
@@ -136,5 +168,5 @@ export const tasksReducer = (state: { [Key: string]: Array<ITask> } = {}, action
     }
 }
 
-
+type ThunkDispatch = Dispatch<TaskActionType | AppActionType>
 

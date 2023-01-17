@@ -1,12 +1,13 @@
-import {Filter, ITodolist, ITodolistAPI, TodolistActionType} from "../../types";
+import {AppStatuses, Filter, ITodolist, ITodolistAPI, TodolistActionType} from "../../types";
 import {Dispatch} from "redux";
 import {todolistsAPI} from "../../DAL/todolistsAPI";
+import {AppActionType, setStatusAC} from "./AppReducer";
 
 
 export type RemoveTodolistAction = ReturnType<typeof removeTodolistAC>
 export type AddTodolistAction = ReturnType<typeof addTodolistAC>
 export type SetTodolistsAction = ReturnType<typeof setTodolistAC>
-
+//TODO: Add error handling
 export const todolistsReducer = (state: Array<ITodolist> = [], action: TodolistActionType): Array<ITodolist> => {
     switch (action.type) {
         case "REMOVE-TODOLIST" : {
@@ -66,29 +67,46 @@ export const setTodolistAC = (todolists: Array<ITodolistAPI>) => ({
     payload: todolists
 } as const)
 //thunks
-export const fetchTodolistTC = () => (dispatch: Dispatch<TodolistActionType>) => {
+export const fetchTodolistTC = () => (dispatch: ThunkDispatch) => {
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     todolistsAPI.getTodolist()
         .then(res => {
+            // @ts-ignore
+            dispatch(setStatusAC(AppStatuses.Idle))
             dispatch(setTodolistAC(res.data))
         })
 }
-export const addTodolistTC = (todolistTitle: string) => (dispatch: Dispatch<TodolistActionType>) => {
+export const addTodolistTC = (todolistTitle: string) => (dispatch: ThunkDispatch) => {
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     todolistsAPI.createTodolist(todolistTitle)
         .then(res => {
+            // @ts-ignore
+            dispatch(setStatusAC(AppStatuses.Idle))
             // @ts-ignore
             dispatch(fetchTodolistTC())
         })
 }
-export const deleteTodolistTC = (todolistId: string) => (dispatch: Dispatch<TodolistActionType>) => {
+export const deleteTodolistTC = (todolistId: string) => (dispatch: ThunkDispatch) => {
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     todolistsAPI.deleteTodolist(todolistId).then(res => {
+            // @ts-ignore
+            dispatch(setStatusAC(AppStatuses.Idle))
             // @ts-ignore
             dispatch(fetchTodolistTC())
         }
     )
 }
-export const renameTodolistTC = (newTodolistTitle: string, todolistId: string) => (dispatch: Dispatch<TodolistActionType>) => {
+export const renameTodolistTC = (newTodolistTitle: string, todolistId: string) => (dispatch: ThunkDispatch) => {
+    // @ts-ignore
+    dispatch(setStatusAC(AppStatuses.Loading))
     todolistsAPI.updateTodolist(todolistId, newTodolistTitle).then(res => {
+        // @ts-ignore
+        dispatch(setStatusAC(AppStatuses.Idle))
         // @ts-ignore
         dispatch(fetchTodolistTC())
     })
 }
+type ThunkDispatch = Dispatch<TodolistActionType | AppActionType>

@@ -50,6 +50,7 @@ export const TodolistList: FC = () => {
                                           setFilter={changeFilter}
                                           deleteTodolist={deleteTodolist}
                                           changeTodolistTitle={changeTodolistTitle}
+                                          demo
                                 />
                             </Paper>
                         </Grid>

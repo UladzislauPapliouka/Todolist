@@ -13,7 +13,8 @@ interface ITodolistProps {
     filter: Filter
     setFilter: (filter: Filter, todolistId: string) => void
     deleteTodolist: (todolistId: string) => void
-    changeTodolistTitle: (newTitle: string, todolistId: string) => void
+    changeTodolistTitle: (newTitle: string, todolistId: string) => void,
+    demo?:boolean
 }
 
 interface ITodolistAPI {
@@ -112,6 +113,17 @@ interface TaskProps extends ITask {
     onDelete: (taskId: string) => void
 }
 
+enum AppStatuses {
+    Idle,
+    Loading,
+    succeeded,
+    failed
+}
+
+type AppStateType = {
+    status: AppStatuses,
+    error: string | null
+}
 export type {
     ITask,
     ITodolistProps,
@@ -125,10 +137,13 @@ export type {
     TaskActionType,
     TodolistActionType,
     TaskProps,
+    AppStateType,
+
 }
 export {
     Filter,
     TaskStatuses,
-    TaskPriorities
+    TaskPriorities,
+    AppStatuses
 }
 

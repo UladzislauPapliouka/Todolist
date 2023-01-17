@@ -12,6 +12,6 @@ export default {
 
 export const AppBase = () => {
     return (
-        <App/>
+        <App />
     )
 }
