@@ -1,6 +1,6 @@
 import {AppStatuses, Filter, ITodolist, ITodolistAPI} from "../../types";
 import {todolistsAPI} from "../../DAL/todolistsAPI";
-import {setStatusAC} from "./AppReducer";
+import {setErrorAC, setStatusAC} from "./AppReducer";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
 
@@ -34,8 +34,14 @@ export const addTodolistTC = createAsyncThunk<{ todolist: ITodolistAPI }, { todo
         thunkAPI.dispatch(setStatusAC({status: AppStatuses.Loading}))
         try {
             const response = await todolistsAPI.createTodolist(arg.todolistTitle)
-            thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
-            return {todolist: response.data.data.item}
+            if (response.data.resultCode === 0) {
+                thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
+                return {todolist: response.data.data.item}
+            } else {
+                thunkAPI.dispatch(setErrorAC({error: response.data.messages[0]}))
+                thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
+                return thunkAPI.rejectWithValue(response.data.messages[0])
+            }
         } catch (err) {
             const error = err as AxiosError
             return thunkAPI.rejectWithValue(error.message)

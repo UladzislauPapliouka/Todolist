@@ -40,8 +40,7 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
         taskId,
         todolistId: id
     })), [dispatch, id])
-    // const onChangeStatusHandler = useCallback((taskId: string) => dispatch(changeTaskStatusAC(taskId, id)), [dispatch, id])
-    const updateTitle = useCallback((newTaskInfo: UpdateDateType, taskId: string) => dispatch(updateTaskTC({
+    const updateTask= useCallback((newTaskInfo: UpdateDateType, taskId: string) => dispatch(updateTaskTC({
         newTaskInfo,
         taskId,
         todolistId: id
@@ -76,7 +75,7 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
                 {tasksForTodolist.map((task) => {
 
                     return (
-                        <Task key={task.id} updateTask={updateTitle}
+                        <Task key={task.id} updateTask={updateTask}
                               onDelete={onDeleteHandler} title={task.title} status={task.status} id={task.id}
                               startDate={task.startDate} addedDate={task.addedDate} description={task.description}
                               deadline={task.deadline} order={task.order} priority={task.priority}

@@ -1,4 +1,4 @@
-import {setErrorAC, setStatusAC} from "./AppReducer";
+import {initializeAppTC, setErrorAC, setStatusAC} from "./AppReducer";
 import {AppStatuses} from "../../types";
 
 import {LoginAPI, LoginParamsType} from "../../DAL/loginAPI";
@@ -45,17 +45,21 @@ export const logoutTC = createAsyncThunk(
     "Login/logoutRequest",
     async (data: LoginParamsType, thunkAPI) => {
         thunkAPI.dispatch(setStatusAC({status: AppStatuses.Loading}))
-        LoginAPI.logout()
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    // @ts-ignore
-                    thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
-                    thunkAPI.dispatch(setIsLoggedIn({isLoggedIn: false}))
-                } else {
-                    thunkAPI.dispatch(setErrorAC({error: res.data.messages[0]}))
-                    thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
-                }
-            })
+
+        try {
+            const response = await LoginAPI.logout()
+            if (response.data.resultCode === 0) {
+                thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
+                return {isLoggedIn: false}
+            } else {
+                thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
+                thunkAPI.dispatch(setErrorAC({error: response.data.messages[0]}))
+                return thunkAPI.rejectWithValue(response.data.messages[0])
+            }
+        } catch (e) {
+            thunkAPI.dispatch(setErrorAC({error: "Network error"}))
+            return thunkAPI.rejectWithValue("Network Error")
+        }
     }
 )
 
@@ -69,6 +73,12 @@ export const LoginSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(loginTC.fulfilled, (state, action) => {
+            state.isLoggedIn = action.payload.isLoggedIn
+        })
+        builder.addCase(logoutTC.fulfilled, (state, action) => {
+            state.isLoggedIn = action.payload.isLoggedIn
+        })
+        builder.addCase(initializeAppTC.fulfilled, (state, action) => {
             state.isLoggedIn = action.payload.isLoggedIn
         })
     }
