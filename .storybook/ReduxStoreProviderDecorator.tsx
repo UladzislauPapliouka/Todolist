@@ -13,6 +13,9 @@ const initialStore: RootState = {
     app: {
         status: AppStatuses.Idle,
         error: null
+    },
+    auth: {
+        isLoggedIn:false
     }
 }
 

@@ -122,7 +122,8 @@ enum AppStatuses {
 
 type AppStateType = {
     status: AppStatuses,
-    error: string | null
+    error: string | null,
+    isInitialized:boolean
 }
 export type {
     ITask,

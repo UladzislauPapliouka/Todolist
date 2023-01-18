@@ -1,7 +1,7 @@
 import {AppStatuses, Filter, ITodolist, ITodolistAPI, TodolistActionType} from "../../types";
 import {Dispatch} from "redux";
 import {todolistsAPI} from "../../DAL/todolistsAPI";
-import {AppActionType, setStatusAC} from "./AppReducer";
+import {AppActionType, setErrorAC, setStatusAC} from "./AppReducer";
 
 
 export type RemoveTodolistAction = ReturnType<typeof removeTodolistAC>
@@ -75,7 +75,10 @@ export const fetchTodolistTC = () => (dispatch: ThunkDispatch) => {
             // @ts-ignore
             dispatch(setStatusAC(AppStatuses.Idle))
             dispatch(setTodolistAC(res.data))
-        })
+        }).catch(error => {
+            dispatch(setStatusAC(AppStatuses.Idle))
+        dispatch(setErrorAC(error))
+    })
 }
 export const addTodolistTC = (todolistTitle: string) => (dispatch: ThunkDispatch) => {
     // @ts-ignore

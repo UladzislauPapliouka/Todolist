@@ -11,8 +11,11 @@ import {
     deleteTodolistTC, fetchTodolistTC,
     renameTodolistTC
 } from "../../Store/Reducers/todolistsReducer";
+import {Navigate} from "react-router-dom";
+
 
 export const TodolistList: FC = () => {
+    const isLoggedIn = useSelector<RootState, boolean>(state => state.auth.isLoggedIn)
     const todolists = useSelector((store: RootState) => store.todolists)
     const dispatch = useDispatch()
     const changeFilter = useCallback((filter: Filter, todolistId: string) => {
@@ -34,8 +37,9 @@ export const TodolistList: FC = () => {
     }, [dispatch])
     useEffect(() => {
         // @ts-ignore
-        dispatch(fetchTodolistTC())
-    }, [dispatch])
+        isLoggedIn && dispatch(fetchTodolistTC())
+    }, [dispatch, isLoggedIn])
+    if (!isLoggedIn) return <Navigate to={"/"}/>
     return (
         <>
             <Grid container style={{padding: "20px"}}> <AddItemForm addItemCallback={addTodolist}/></Grid>
