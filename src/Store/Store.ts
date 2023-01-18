@@ -1,15 +1,24 @@
-import {applyMiddleware, combineReducers, createStore} from "redux";
-import {todolistsReducer} from "./Reducers/todolistsReducer";
-import {tasksReducer} from "./Reducers/tasksReducer";
+import {combineReducers} from "redux";
+import {TodolistSlice} from "./Reducers/todolistsReducer";
+import {TasksSlice} from "./Reducers/tasksReducer";
 import thunk from "redux-thunk";
-import {AppReducer} from "./Reducers/AppReducer";
-import {LoginReducer} from "./Reducers/LoginReducer";
+import {AppSlice} from "./Reducers/AppReducer";
+import {LoginSlice} from "./Reducers/LoginReducer";
+import {configureStore} from "@reduxjs/toolkit";
+import {useDispatch} from "react-redux";
 
 export const RootReducer = combineReducers({
-    todolists: todolistsReducer,
-    tasks: tasksReducer,
-    app: AppReducer,
-    auth: LoginReducer
+    todolists: TodolistSlice.reducer,
+    tasks: TasksSlice.reducer,
+    app: AppSlice.reducer,
+    auth: LoginSlice.reducer
 })
-export const Store = createStore(RootReducer, applyMiddleware(thunk))
+
+export const Store = configureStore({
+    reducer: RootReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().prepend(thunk)
+})
+type AppDispatch = typeof Store.dispatch
+export const useAppDispatch = () => useDispatch<AppDispatch>()
 export type RootState = ReturnType<typeof Store.getState>

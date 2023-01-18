@@ -2,8 +2,8 @@ import {Grid, Paper} from "@mui/material";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {Todolist} from "../Todolist/Todolist";
 import React, {FC, useCallback, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../Store/Store";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "../../Store/Store";
 import {Filter} from "../../types";
 import {
     addTodolistTC,
@@ -17,26 +17,20 @@ import {Navigate} from "react-router-dom";
 export const TodolistList: FC = () => {
     const isLoggedIn = useSelector<RootState, boolean>(state => state.auth.isLoggedIn)
     const todolists = useSelector((store: RootState) => store.todolists)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const changeFilter = useCallback((filter: Filter, todolistId: string) => {
-        dispatch(changeTodolistFilterAC(filter, todolistId))
+        dispatch(changeTodolistFilterAC({todolistFilter: filter, todolistId}))
     }, [dispatch])
     const deleteTodolist = useCallback((todolistId: string) => {
-        const action = deleteTodolistTC(todolistId)
-        // @ts-ignore
-        dispatch(action)
+        dispatch(deleteTodolistTC({todolistId}))
     }, [dispatch])
     const addTodolist = useCallback((todolistTitle: string) => {
-        const action = addTodolistTC(todolistTitle)
-        // @ts-ignore
-        dispatch(action)
+        dispatch(addTodolistTC({todolistTitle}))
     }, [dispatch])
-    const changeTodolistTitle = useCallback((title: string, todolistId: string) => {
-        // @ts-ignore
-        dispatch(renameTodolistTC(title, todolistId))
+    const changeTodolistTitle = useCallback((newTodolistTitle: string, todolistId: string) => {
+        dispatch(renameTodolistTC({newTodolistTitle, todolistId}))
     }, [dispatch])
     useEffect(() => {
-        // @ts-ignore
         isLoggedIn && dispatch(fetchTodolistTC())
     }, [dispatch, isLoggedIn])
     if (!isLoggedIn) return <Navigate to={"/"}/>

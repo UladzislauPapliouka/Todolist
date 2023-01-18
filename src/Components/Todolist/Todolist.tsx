@@ -4,8 +4,8 @@ import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../Store/Store";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "../../Store/Store";
 import {
     addTaskTC,
     deleteTaskTC,
@@ -25,23 +25,27 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
     //TODO: refactor to get todolist object in props
     //TODO: disable todolist while deleting
     const tasks = useSelector((store: RootState) => store.tasks[id])
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const setFilterAll = useCallback(() => setFilter(Filter.ALL, id), [setFilter, id])
     const setFilterACTIVE = useCallback(() => setFilter(Filter.ACTIVE, id), [setFilter, id])
     const setFilterCOMPLETED = useCallback(() => setFilter(Filter.COMPLETED, id), [setFilter, id])
     const deleteTodolistHandler = () => deleteTodolist(id)
     const addTaskHandler = useCallback((taskTitle: string) => {
-        // @ts-ignore
-        dispatch(addTaskTC(taskTitle, id))
+        dispatch(addTaskTC({taskTitle, todolistId: id}))
     }, [id, dispatch])
     const changeTodolistTitleHandler = useCallback((newTitle: string) => {
         changeTodolistTitle(newTitle, id)
     }, [id, changeTodolistTitle])
-    // @ts-ignore
-    const onDeleteHandler = useCallback((taskId: string) => dispatch(deleteTaskTC(taskId, id)), [dispatch, id])
+    const onDeleteHandler = useCallback((taskId: string) => dispatch(deleteTaskTC({
+        taskId,
+        todolistId: id
+    })), [dispatch, id])
     // const onChangeStatusHandler = useCallback((taskId: string) => dispatch(changeTaskStatusAC(taskId, id)), [dispatch, id])
-    // @ts-ignore
-    const updateTitle = useCallback((newTaskInfo: UpdateDateType, taskId: string) => dispatch(updateTaskTC(newTaskInfo, taskId, id)), [dispatch, id])
+    const updateTitle = useCallback((newTaskInfo: UpdateDateType, taskId: string) => dispatch(updateTaskTC({
+        newTaskInfo,
+        taskId,
+        todolistId: id
+    })), [dispatch, id])
     let tasksForTodolist: Array<ITask>
     switch (filter) {
         case Filter.ALL:

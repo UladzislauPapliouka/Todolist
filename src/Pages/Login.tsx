@@ -11,15 +11,15 @@ import {
     Typography
 } from "@mui/material";
 import {useFormik} from "formik";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {loginTC} from "../Store/Reducers/LoginReducer";
-import {RootState} from "../Store/Store";
+import {RootState, useAppDispatch} from "../Store/Store";
 import {Navigate} from "react-router-dom";
 
 export const Login: FC = () => {
     const isLoggedIn = useSelector<RootState, boolean>(state => state.auth.isLoggedIn)
 
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const formik = useFormik({
         validate: (values) => {
             if (!values.email) {
@@ -39,9 +39,15 @@ export const Login: FC = () => {
             password: '',
             rememberMe: false
         },
-        onSubmit: values => {
-            // @ts-ignore
-            dispatch(loginTC(values))
+        onSubmit: async (values, formikHelpers) => {
+            const action = await dispatch(loginTC({...values}))
+            if(loginTC.rejected.match(action)){
+                if(action.payload?.fieldsErrors?.length){
+                    const err= action.payload?.fieldsErrors[0]
+                    formikHelpers.setFieldError(err.field,err.error)
+                }
+            }
+
         },
     });
     if (isLoggedIn) return <Navigate to={"/todo-lists"}/>

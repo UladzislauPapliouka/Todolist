@@ -1,12 +1,3 @@
-import {
-    AddTodolistAction,
-    changeTodolistFilterAC,
-    RemoveTodolistAction,
-    renameTodolistAC,
-    SetTodolistsAction
-} from "./Store/Reducers/todolistsReducer";
-import {addTaskAC, changeTaskStatusAC, removeTaskAC, renameTaskAC, setTaskAC} from "./Store/Reducers/tasksReducer";
-
 interface ITodolistProps {
     title: string
     id: string
@@ -14,7 +5,7 @@ interface ITodolistProps {
     setFilter: (filter: Filter, todolistId: string) => void
     deleteTodolist: (todolistId: string) => void
     changeTodolistTitle: (newTitle: string, todolistId: string) => void,
-    demo?:boolean
+    demo?: boolean
 }
 
 interface ITodolistAPI {
@@ -59,6 +50,7 @@ interface IEditableSpanProps {
 type  ResponseType<D = {}> = {
     resultCode: number,
     messages: Array<string>
+    fieldsErrors?: Array<{ field: string, error: string }>
     data: D
 }
 
@@ -91,23 +83,6 @@ enum TaskPriorities {
     Later
 }
 
-
-type TaskActionType =
-    | ReturnType<typeof addTaskAC>
-    | ReturnType<typeof removeTaskAC>
-    | ReturnType<typeof changeTaskStatusAC>
-    | ReturnType<typeof renameTaskAC>
-    | AddTodolistAction
-    | RemoveTodolistAction
-    | SetTodolistsAction
-    | ReturnType<typeof setTaskAC>
-type TodolistActionType =
-    | RemoveTodolistAction
-    | AddTodolistAction
-    | ReturnType<typeof renameTodolistAC>
-    | ReturnType<typeof changeTodolistFilterAC>
-    | SetTodolistsAction
-
 interface TaskProps extends ITask {
     updateTask: (newTaskInfo: UpdateDateType, taskId: string) => void
     onDelete: (taskId: string) => void
@@ -123,7 +98,7 @@ enum AppStatuses {
 type AppStateType = {
     status: AppStatuses,
     error: string | null,
-    isInitialized:boolean
+    isInitialized: boolean
 }
 export type {
     ITask,
@@ -135,8 +110,6 @@ export type {
     ResponseType,
     UpdateDateType,
     TaskAPIResponseType,
-    TaskActionType,
-    TodolistActionType,
     TaskProps,
     AppStateType,
 

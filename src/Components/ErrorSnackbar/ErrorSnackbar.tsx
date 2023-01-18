@@ -23,7 +23,7 @@ export function CustomizedSnackbars() {
         if (reason === 'clickaway') {
             return;
         }
-        dispatch(setErrorAC(null))
+        dispatch(setErrorAC({error:null}))
         // setOpen(false);
     };
     const isOpen = error !== null

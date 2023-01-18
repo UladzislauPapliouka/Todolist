@@ -17,7 +17,7 @@ import {AppStatuses} from "./types";
 import {RootState} from "./Store/Store";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {Login} from "./Pages/Login";
-import {inicializeAppTC} from "./Store/Reducers/AppReducer";
+import {initializeAppTC} from "./Store/Reducers/AppReducer";
 import {logoutTC} from "./Store/Reducers/LoginReducer";
 
 const App: FC = () => {
@@ -26,7 +26,7 @@ const App: FC = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         // @ts-ignore
-        dispatch(inicializeAppTC())
+        dispatch(initializeAppTC())
     }, [dispatch])
     if (!isInitialized) {
         return (<Box

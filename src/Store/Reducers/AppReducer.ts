@@ -1,54 +1,50 @@
 import {AppStateType, AppStatuses} from "../../types";
 import {LoginAPI} from "../../DAL/loginAPI";
-import {Dispatch} from "redux";
 import {setIsLoggedIn} from "./LoginReducer";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-export type AppActionType =
-    | ReturnType<typeof setStatusAC>
-    | ReturnType<typeof setErrorAC>
-    | ReturnType<typeof seInitializedAC>
 const initialState: AppStateType = {
     error: null,
     status: AppStatuses.Idle,
     isInitialized: false
 }
-export const AppReducer = (state: AppStateType = initialState, action: AppActionType): AppStateType => {
-    switch (action.type) {
-        case "APP/SET-STATUS": {
-            return {...state, status: action.payload.status}
+
+export const initializeAppTC = createAsyncThunk(
+    "App/InitializeRequest",
+    async (arg, thunkAPI) => {
+        thunkAPI.dispatch(setStatusAC({status: AppStatuses.Loading}))
+        const response = await LoginAPI.authMe()
+        if (response.data.resultCode === 0) {
+            thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
+            thunkAPI.dispatch(setIsLoggedIn({isLoggedIn: true}))
+        } else {
+            thunkAPI.dispatch(setIsLoggedIn({isLoggedIn: false}))
+            thunkAPI.dispatch(setErrorAC({error: response.data.messages[0]}))
+            thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
         }
-        case "APP/SET-ERROR": {
-            return {...state, error: action.payload.error}
-        }
-        case "APP/SET-INITIALIZED": {
-            return {...state, isInitialized: action.payload.isInitialized}
-        }
-        default:
-            return state
+        thunkAPI.dispatch(setInitializedAC({isInitialized: true}))
     }
-}
+)
 
-export const setStatusAC = (status: AppStatuses) => ({type: "APP/SET-STATUS", payload: {status}} as const)
-export const setErrorAC = (error: string | null) => ({type: "APP/SET-ERROR", payload: {error}} as const)
-export const seInitializedAC = (isInitialized: boolean) => ({
-    type: "APP/SET-INITIALIZED",
-    payload: {isInitialized}
-} as const)
 
-export const inicializeAppTC = () => (dispatch: Dispatch) => {
-    // @ts-ignore
-    dispatch(setStatusAC(AppStatuses.Loading))
-    LoginAPI.authMe()
-        .then(res => {
-            if (res.data.resultCode === 0) {
-                // @ts-ignore
-                dispatch(setStatusAC(AppStatuses.Idle))
-                dispatch(setIsLoggedIn(true))
-            } else {
-                dispatch(setIsLoggedIn(false))
-                dispatch(setErrorAC(res.data.messages[0]))
-                dispatch(setStatusAC(AppStatuses.Idle))
-            }
-            dispatch(seInitializedAC(true))
-        })
-}
+export const AppSlice = createSlice({
+    name: "App",
+    initialState,
+    reducers: {
+        setStatusAC: (state, action: PayloadAction<{ status: AppStatuses }>) => {
+            state.status = action.payload.status
+        },
+        setErrorAC: (state, action: PayloadAction<{ error: string | null }>) => {
+            state.error = action.payload.error
+        },
+        setInitializedAC: (state, action: PayloadAction<{ isInitialized: boolean }>) => {
+            state.isInitialized = action.payload.isInitialized
+        }
+    },
+})
+
+
+//actions
+export const {setInitializedAC, setErrorAC, setStatusAC} = AppSlice.actions
+
+
