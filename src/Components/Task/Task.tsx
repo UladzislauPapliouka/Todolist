@@ -3,13 +3,15 @@ import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
 import React, {FC, useCallback, useMemo} from "react";
 import {ITask, TaskProps, TaskStatuses} from "../../types";
+import {useActions} from "../../Store/Store";
+import {tasksAsyncActions} from "../../Store/Reducers";
 
 export const Task: FC<TaskProps> = React.memo(({
                                                    id,
 
-                                                   updateTask,
+
                                                    title,
-                                                   onDelete,
+
                                                    status,
                                                    todoListId,
                                                    priority,
@@ -34,15 +36,22 @@ export const Task: FC<TaskProps> = React.memo(({
         description, deadline,
         addedDate,
         startDate, status])
+    const {updateTask, deleteTask} = useActions(tasksAsyncActions)
     const onChangeStatusHandler = () => updateTask({
-        ...taskInfo,
-        status: status === TaskStatuses.Completed ? TaskStatuses.InProgress : TaskStatuses.Completed
-    }, id)
+        newTaskInfo: {
+            ...taskInfo,
+            status: status === TaskStatuses.Completed ? TaskStatuses.InProgress : TaskStatuses.Completed
+        }, taskId: id, todolistId: todoListId
+    })
     const changeTitleHandler = useCallback((newTitle: string) => updateTask({
-        ...taskInfo,
-        title: newTitle
-    }, id), [id, updateTask, taskInfo])
-    const onDeleteHandler = () => onDelete(id)
+        newTaskInfo: {
+            ...taskInfo,
+            title: newTitle
+        }, taskId: id, todolistId: todoListId
+    }), [id, updateTask, taskInfo, todoListId])
+    const onDeleteHandler = useCallback(() => {
+        deleteTask({taskId: id, todolistId: todoListId})
+    }, [deleteTask, todoListId, id])
     console.log('Task is called')
     return (
         <div className={`${status === TaskStatuses.Completed && "is-done"}`} key={id}>

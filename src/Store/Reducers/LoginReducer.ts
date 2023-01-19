@@ -1,7 +1,7 @@
 import {initializeAppTC, setErrorAC, setStatusAC} from "./AppReducer";
 import {AppStatuses} from "../../types";
 
-import {LoginAPI, LoginParamsType} from "../../DAL/loginAPI";
+import {LoginAPI, LoginParamsType} from "../../DAL";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
 
@@ -9,8 +9,7 @@ const initialState = {
     isLoggedIn: false
 }
 
-//thunks
-export const loginTC = createAsyncThunk<{ isLoggedIn: boolean }, LoginParamsType, {
+const loginTC = createAsyncThunk<{ isLoggedIn: boolean }, LoginParamsType, {
     rejectValue: {
         errors: Array<string>,
         fieldsErrors: Array<{ field: string, error: string }> | undefined
@@ -40,10 +39,9 @@ export const loginTC = createAsyncThunk<{ isLoggedIn: boolean }, LoginParamsType
         }
     }
 )
-
-export const logoutTC = createAsyncThunk(
+const logoutTC = createAsyncThunk<{ isLoggedIn: boolean }, void>(
     "Login/logoutRequest",
-    async (data: LoginParamsType, thunkAPI) => {
+    async (data, thunkAPI) => {
         thunkAPI.dispatch(setStatusAC({status: AppStatuses.Loading}))
 
         try {
@@ -62,7 +60,10 @@ export const logoutTC = createAsyncThunk(
         }
     }
 )
-
+export const LoginAsynkActions = {
+    loginTC,
+    logoutTC
+}
 export const LoginSlice = createSlice({
     name: "Login",
     initialState,

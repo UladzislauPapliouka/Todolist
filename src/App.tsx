@@ -12,20 +12,21 @@ import {
 import {Menu} from "@mui/icons-material";
 import {TodolistList} from "./Components/TodolistList/TodolistList";
 import {CustomizedSnackbars} from "./Components/ErrorSnackbar/ErrorSnackbar";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {AppStatuses} from "./types";
-import {RootState} from "./Store/Store";
+import {useAppDispatch} from "./Store/Store";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {Login} from "./Pages/Login";
 import {initializeAppTC} from "./Store/Reducers/AppReducer";
-import {logoutTC} from "./Store/Reducers/LoginReducer";
+import {loginActions} from "./Store/Reducers";
+import {appSelectors} from "./Store/Reducers";
+
 
 const App: FC = () => {
-    const appStatus = useSelector<RootState, AppStatuses>((state: RootState) => state.app.status)
-    const isInitialized = useSelector<RootState, boolean>(state => state.app.isInitialized)
-    const dispatch = useDispatch()
+    const appStatus = useSelector(appSelectors.selectAppStatus)
+    const isInitialized = useSelector(appSelectors.selectAppIsInitialized)
+    const dispatch = useAppDispatch()
     useEffect(() => {
-        // @ts-ignore
         dispatch(initializeAppTC())
     }, [dispatch])
     if (!isInitialized) {
@@ -34,8 +35,7 @@ const App: FC = () => {
             <CircularProgress/>
         </Box>)
     }
-    // @ts-ignore
-    const logoutHandler = () => dispatch(logoutTC())
+    const logoutHandler = () => dispatch(loginActions.logoutTC())
     return (
         <BrowserRouter>
             <div className="App">

@@ -1,50 +1,43 @@
 import React, {FC, useCallback, useEffect} from "react";
-import {Filter, ITask, ITodolistProps, TaskStatuses, UpdateDateType} from "../../types";
+import {Filter, ITask, ITodolistProps, TaskStatuses} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Button, ButtonGroup, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../Store/Store";
-import {
-    addTaskTC,
-    deleteTaskTC,
-    setTaskTC, updateTaskTC
-} from "../../Store/Reducers/tasksReducer";
+import {useActions} from "../../Store/Store";
 import {Task} from "../Task/Task";
+import {tasksAsyncActions, tasksSelectors, todolistsActions} from "../../Store/Reducers";
 
 export const Todolist: FC<ITodolistProps> = React.memo(({
                                                             id,
                                                             title,
-                                                            setFilter,
                                                             filter,
-                                                            deleteTodolist,
-                                                            changeTodolistTitle,
-
                                                         }) => {
     //TODO: refactor to get todolist object in props
     //TODO: disable todolist while deleting
-    const tasks = useSelector((store: RootState) => store.tasks[id])
-    const dispatch = useAppDispatch()
-    const setFilterAll = useCallback(() => setFilter(Filter.ALL, id), [setFilter, id])
-    const setFilterACTIVE = useCallback(() => setFilter(Filter.ACTIVE, id), [setFilter, id])
-    const setFilterCOMPLETED = useCallback(() => setFilter(Filter.COMPLETED, id), [setFilter, id])
-    const deleteTodolistHandler = () => deleteTodolist(id)
-    const addTaskHandler = useCallback((taskTitle: string) => {
-        dispatch(addTaskTC({taskTitle, todolistId: id}))
-    }, [id, dispatch])
+    const tasks = useSelector(tasksSelectors.taskSelector(id))
+
+    const {
+        renameTodolist,
+        deleteTodolist,
+        changeTodolistFilterAC
+    } = useActions(todolistsActions)
+    const {addTask, setTask} = useActions(tasksAsyncActions)
+    const setFilter = useCallback((filter: Filter) => changeTodolistFilterAC({
+        todolistFilter: filter,
+        todolistId: id
+    }), [id, changeTodolistFilterAC])
+    const deleteTodolistHandler = useCallback(() => {
+        deleteTodolist({todolistId: id})
+    }, [deleteTodolist, id])
     const changeTodolistTitleHandler = useCallback((newTitle: string) => {
-        changeTodolistTitle(newTitle, id)
-    }, [id, changeTodolistTitle])
-    const onDeleteHandler = useCallback((taskId: string) => dispatch(deleteTaskTC({
-        taskId,
-        todolistId: id
-    })), [dispatch, id])
-    const updateTask= useCallback((newTaskInfo: UpdateDateType, taskId: string) => dispatch(updateTaskTC({
-        newTaskInfo,
-        taskId,
-        todolistId: id
-    })), [dispatch, id])
+        renameTodolist({newTodolistTitle: newTitle, todolistId: id})
+    }, [id, renameTodolist])
+    const addTaskCallback = useCallback((title: string) => {
+        addTask({taskTitle: title, todolistId: id})
+    }, [id, addTask])
+
     let tasksForTodolist: Array<ITask>
     switch (filter) {
         case Filter.ALL:
@@ -59,24 +52,25 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
         default:
             tasksForTodolist = tasks
     }
+    const buttonRender = (buttonFilter: Filter, text: string, color: "primary" | "secondary" | "warning") => (
+        <Button color={color} variant={buttonFilter === filter ? "contained" : undefined}
+                onClick={() => setFilter(buttonFilter)}>{text}</Button>)
     console.log("Todolist is called", id)
     useEffect(() => {
-
-        // @ts-ignore
-        dispatch(setTaskTC(id))
-    }, [dispatch, id])
+        setTask(id)
+    }, [id, setTask])
     return (
         <div>
             <h3><EditableSpan value={title} changeItemCallback={changeTodolistTitleHandler}/>
                 <IconButton onClick={deleteTodolistHandler}><Delete/></IconButton>
             </h3>
-            <AddItemForm addItemCallback={addTaskHandler}/>
+            <AddItemForm addItemCallback={addTaskCallback}/>
             <div>
                 {tasksForTodolist.map((task) => {
 
                     return (
-                        <Task key={task.id} updateTask={updateTask}
-                              onDelete={onDeleteHandler} title={task.title} status={task.status} id={task.id}
+                        <Task key={task.id}
+                              title={task.title} status={task.status} id={task.id}
                               startDate={task.startDate} addedDate={task.addedDate} description={task.description}
                               deadline={task.deadline} order={task.order} priority={task.priority}
                               todoListId={task.todoListId}/>
@@ -85,14 +79,9 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
             </div>
             <div>
                 <ButtonGroup>
-                    <Button variant={filter === Filter.ALL ? "contained" : undefined}
-                            onClick={setFilterAll}>All</Button>
-                    <Button color={"secondary"} variant={filter === Filter.ACTIVE ? "contained" : undefined}
-                            onClick={setFilterACTIVE}>Active
-                    </Button>
-                    <Button color={"warning"} variant={filter === Filter.COMPLETED ? "contained" : undefined}
-                            onClick={setFilterCOMPLETED}>Completed
-                    </Button>
+                    {buttonRender(Filter.ALL, "All", "primary")}
+                    {buttonRender(Filter.ACTIVE, "Active", "secondary")}
+                    {buttonRender(Filter.COMPLETED, "Completed", "warning")}
                 </ButtonGroup>
             </div>
         </div>

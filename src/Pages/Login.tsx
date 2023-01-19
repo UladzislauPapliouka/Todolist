@@ -12,12 +12,13 @@ import {
 } from "@mui/material";
 import {useFormik} from "formik";
 import {useSelector} from "react-redux";
-import {loginTC} from "../Store/Reducers/LoginReducer";
-import {RootState, useAppDispatch} from "../Store/Store";
+import {loginActions} from "../Store/Reducers";
+import {useAppDispatch} from "../Store/Store";
 import {Navigate} from "react-router-dom";
+import {isLoggedInSelector} from "../Store/Reducers/LoginSelectors";
 
 export const Login: FC = () => {
-    const isLoggedIn = useSelector<RootState, boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useSelector(isLoggedInSelector)
 
     const dispatch = useAppDispatch()
     const formik = useFormik({
@@ -40,11 +41,11 @@ export const Login: FC = () => {
             rememberMe: false
         },
         onSubmit: async (values, formikHelpers) => {
-            const action = await dispatch(loginTC({...values}))
-            if(loginTC.rejected.match(action)){
-                if(action.payload?.fieldsErrors?.length){
-                    const err= action.payload?.fieldsErrors[0]
-                    formikHelpers.setFieldError(err.field,err.error)
+            const action = await dispatch(loginActions.loginTC({...values}))
+            if (loginActions.loginTC.rejected.match(action)) {
+                if (action.payload?.fieldsErrors?.length) {
+                    const err = action.payload?.fieldsErrors[0]
+                    formikHelpers.setFieldError(err.field, err.error)
                 }
             }
 

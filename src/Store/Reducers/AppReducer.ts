@@ -1,5 +1,5 @@
 import {AppStateType, AppStatuses} from "../../types";
-import {LoginAPI} from "../../DAL/loginAPI";
+import {LoginAPI} from "../../DAL";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState: AppStateType = {

@@ -2,9 +2,6 @@ interface ITodolistProps {
     title: string
     id: string
     filter: Filter
-    setFilter: (filter: Filter, todolistId: string) => void
-    deleteTodolist: (todolistId: string) => void
-    changeTodolistTitle: (newTitle: string, todolistId: string) => void,
     demo?: boolean
 }
 
@@ -84,8 +81,6 @@ enum TaskPriorities {
 }
 
 interface TaskProps extends ITask {
-    updateTask: (newTaskInfo: UpdateDateType, taskId: string) => void
-    onDelete: (taskId: string) => void
 }
 
 enum AppStatuses {
