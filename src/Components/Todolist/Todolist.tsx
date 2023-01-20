@@ -2,18 +2,19 @@ import React, {FC, useCallback, useEffect} from "react";
 import {Filter, ITask, ITodolistProps, TaskStatuses} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
-import {Button, ButtonGroup, IconButton} from "@mui/material";
+import {Button, ButtonGroup, IconButton, Paper, Typography} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {useSelector} from "react-redux";
 import {useActions} from "../../Store/Store";
 import {Task} from "../Task/Task";
 import {tasksAsyncActions, tasksSelectors, todolistsActions} from "../../Store/Reducers";
+import styles from "./Todolist.module.css"
 
-export const Todolist: FC<ITodolistProps> = React.memo(({
-                                                            id,
-                                                            title,
-                                                            filter,
-                                                        }) => {
+export const Todolist: FC<ITodolistProps> = React.memo(function Todolist({
+                                                                             id,
+                                                                             title,
+                                                                             filter,
+                                                                         }) {
     //TODO: refactor to get todolist object in props
     //TODO: disable todolist while deleting
     const tasks = useSelector(tasksSelectors.taskSelector(id))
@@ -60,12 +61,14 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
         setTask(id)
     }, [id, setTask])
     return (
-        <div>
+        <Paper style={{position: 'relative', padding:"10px"}}>
             <h3><EditableSpan value={title} changeItemCallback={changeTodolistTitleHandler}/>
-                <IconButton onClick={deleteTodolistHandler}><Delete/></IconButton>
             </h3>
+            <IconButton style={{position: "absolute", right: "10px", top: "10px"}}
+                        onClick={deleteTodolistHandler}><Delete/></IconButton>
             <AddItemForm addItemCallback={addTaskCallback}/>
             <div>
+                {!tasksForTodolist.length && <Typography style={{padding:"10px", color:"#868686"}} variant={"body1"} >No task here</Typography>}
                 {tasksForTodolist.map((task) => {
 
                     return (
@@ -84,6 +87,6 @@ export const Todolist: FC<ITodolistProps> = React.memo(({
                     {buttonRender(Filter.COMPLETED, "Completed", "warning")}
                 </ButtonGroup>
             </div>
-        </div>
+        </Paper>
     )
 })

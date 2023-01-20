@@ -15,6 +15,6 @@ export const LoginAPI = {
         return instance.get<ResponseType<{ id: number, email: string, login: string }>>("/auth/me")
     },
     logout() {
-        return instance.delete<ResponseType<{}>>("/auth/login")
+        return instance.delete<ResponseType<object>>("/auth/login")
     }
 }

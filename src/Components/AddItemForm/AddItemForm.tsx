@@ -4,7 +4,7 @@ import {IconButton, TextField} from "@mui/material";
 import {ControlPoint} from "@mui/icons-material";
 
 
-export const AddItemForm: FC<IAddItemFormProps> = React.memo(({addItemCallback}) => {
+export const AddItemForm: FC<IAddItemFormProps> = React.memo(function AddItemForm({addItemCallback}) {
     const [newItemTitle, setNewItemTitle] = useState<string>("")
     const onAddTaskHandler = () => {
         if (newItemTitle.trim()) {
@@ -24,11 +24,12 @@ export const AddItemForm: FC<IAddItemFormProps> = React.memo(({addItemCallback})
     const errorMessage = "Field is required"
     const [error, setError] = useState<boolean>(false)
     return (
-        <div>
+        <div style={{display: "flex", alignItems: 'center'}}>
             <TextField onKeyPress={onKeyPressHandler}
                        variant={"outlined"}
                        label={"Type value"}
                        error={error}
+                       fullWidth={true}
                        helperText={error && errorMessage}
                        value={newItemTitle}
                        onChange={onChangeHandler}

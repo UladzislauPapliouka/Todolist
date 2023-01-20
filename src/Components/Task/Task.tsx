@@ -2,25 +2,25 @@ import {Checkbox, IconButton} from "@mui/material";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
 import React, {FC, useCallback, useMemo} from "react";
-import {ITask, TaskProps, TaskStatuses} from "../../types";
+import {ITask, TaskStatuses} from "../../types";
 import {useActions} from "../../Store/Store";
 import {tasksAsyncActions} from "../../Store/Reducers";
 
-export const Task: FC<TaskProps> = React.memo(({
-                                                   id,
+export const Task: FC<ITask> = React.memo(function Task({
+                                                            id,
 
 
-                                                   title,
+                                                            title,
 
-                                                   status,
-                                                   todoListId,
-                                                   priority,
-                                                   order,
-                                                   description,
-                                                   deadline,
-                                                   addedDate,
-                                                   startDate
-                                               }) => {
+                                                            status,
+                                                            todoListId,
+                                                            priority,
+                                                            order,
+                                                            description,
+                                                            deadline,
+                                                            addedDate,
+                                                            startDate
+                                                        }) {
     const taskInfo: ITask = useMemo(() => ({
         id,
         title,
@@ -54,11 +54,14 @@ export const Task: FC<TaskProps> = React.memo(({
     }, [deleteTask, todoListId, id])
     console.log('Task is called')
     return (
-        <div className={`${status === TaskStatuses.Completed && "is-done"}`} key={id}>
-            <Checkbox
-                onChange={onChangeStatusHandler}
-                checked={status === TaskStatuses.Completed}/>
-            <EditableSpan value={title} changeItemCallback={changeTitleHandler}/>
+        <div style={{position: "relative", display: "flex", alignItems: "center", justifyContent: 'space-between'}}
+             className={`${status === TaskStatuses.Completed && "is-done"}`} key={id}>
+            <div>
+                <Checkbox
+                    onChange={onChangeStatusHandler}
+                    checked={status === TaskStatuses.Completed}/>
+                <EditableSpan value={title} changeItemCallback={changeTitleHandler}/>
+            </div>
             <IconButton onClick={onDeleteHandler}>
                 <Delete/>
             </IconButton>

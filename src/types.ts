@@ -36,7 +36,7 @@ enum Filter {
 }
 
 interface IAddItemFormProps {
-    addItemCallback: ((itemTitle: string) => void)
+    addItemCallback: ((itemTitle: string) => void),
 }
 
 interface IEditableSpanProps {
@@ -44,7 +44,7 @@ interface IEditableSpanProps {
     changeItemCallback: (value: string) => void
 }
 
-type  ResponseType<D = {}> = {
+type  ResponseType<D> = {
     resultCode: number,
     messages: Array<string>
     fieldsErrors?: Array<{ field: string, error: string }>
@@ -80,8 +80,6 @@ enum TaskPriorities {
     Later
 }
 
-interface TaskProps extends ITask {
-}
 
 enum AppStatuses {
     Idle,
@@ -105,7 +103,6 @@ export type {
     ResponseType,
     UpdateDateType,
     TaskAPIResponseType,
-    TaskProps,
     AppStateType,
 
 }

@@ -10,7 +10,7 @@ export const tasksAPI = {
         return instance.post<ResponseType<{ item: ITask }>>(`/todo-lists/${todolistId}/tasks`, {title: taskTitle})
     },
     deleteTasks(todolistId: string, taskId: string) {
-        return instance.delete<ResponseType>(`/todo-lists/${todolistId}/tasks/${taskId}`)
+        return instance.delete<ResponseType<object>>(`/todo-lists/${todolistId}/tasks/${taskId}`)
     },
     updateTasks(todolistId: string, taskId: string, info: UpdateDateType) {
         return instance.put<ResponseType<{ item: ITask }>>(`/todo-lists/${todolistId}/tasks/${taskId}`, info)

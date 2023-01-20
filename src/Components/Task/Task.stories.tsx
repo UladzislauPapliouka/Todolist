@@ -1,7 +1,6 @@
 import React from "react"
 import {Task} from './Task'
-import {action} from "@storybook/addon-actions";
-import {TaskPriorities, TaskStatuses, UpdateDateType} from "../../types";
+import {TaskPriorities, TaskStatuses} from "../../types";
 import {ReduxStoreProviderDecorator} from "../../../.storybook/ReduxStoreProviderDecorator";
 
 export default {
@@ -10,8 +9,6 @@ export default {
     decorators: [ReduxStoreProviderDecorator]
 }
 
-const updateAction = action("Task status try to change")
-const deleteAction = action("Task try to delete")
 export const TaskBase = () => {
     return (
         <>

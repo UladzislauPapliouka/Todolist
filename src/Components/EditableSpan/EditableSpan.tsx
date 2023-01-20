@@ -1,10 +1,10 @@
 import React, {ChangeEvent, FC, KeyboardEvent, useState} from "react";
 import {IEditableSpanProps} from "../../types";
 
-export const EditableSpan: FC<IEditableSpanProps> = React.memo(({
+export const EditableSpan: FC<IEditableSpanProps> = React.memo(function EditableSpan({
                                                                     value,
                                                                     changeItemCallback
-                                                                }) => {
+                                                                }){
 
         const [isEdit, setIsEdit] = useState<boolean>(false)
         const [newItemTitle, setNewItemTitle] = useState<string>("")

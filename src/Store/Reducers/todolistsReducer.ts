@@ -8,7 +8,7 @@ import {AxiosError} from "axios";
 //TODO: Add error handling
 //TODO: use Actions instead of thunks in .then
 
-const fetchTodolist = createAsyncThunk<{ todolists: Array<ITodolistAPI> }, void, {}>(
+const fetchTodolist = createAsyncThunk<{ todolists: Array<ITodolistAPI> }, void>(
     "TODOLISTS/fetchTodolistRequest",
     async (args, thunkAPI) => {
         thunkAPI.dispatch(setStatusAC({status: AppStatuses.Loading}))
@@ -58,14 +58,14 @@ const deleteTodolist = createAsyncThunk<{ todolistId: string }, { todolistId: st
         }
     }
 )
-const renameTodolist = createAsyncThunk<{ todolist: ITodolistAPI }, { newTodolistTitle: string, todolistId: string }>(
+const renameTodolist = createAsyncThunk<{ todolistTitle: string, todolistId: string }, { newTodolistTitle: string, todolistId: string }>(
     "TODOLISTS/renameTodolistRequest",
     async (arg, thunkAPI) => {
         thunkAPI.dispatch(setStatusAC({status: AppStatuses.Loading}))
         try {
             const response = await todolistsAPI.updateTodolist(arg.todolistId, arg.newTodolistTitle)
             thunkAPI.dispatch(setStatusAC({status: AppStatuses.Idle}))
-            return {todolist: response.data.data[0]}
+            return {todolistTitle: arg.newTodolistTitle, todolistId: arg.todolistId}
         } catch (e) {
             const error = e as AxiosError
             return thunkAPI.rejectWithValue(error.message)
@@ -102,7 +102,7 @@ export const TodolistSlice = createSlice({
         })
         builder.addCase(renameTodolist.fulfilled, (state, action) => {
             state.forEach(td => {
-                if (td.id === action.payload.todolist.id) td.title = action.payload.todolist.title
+                if (td.id === action.payload.todolistId) td.title = action.payload.todolistTitle
             })
         })
     }

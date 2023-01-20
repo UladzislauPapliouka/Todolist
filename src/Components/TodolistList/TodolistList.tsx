@@ -1,7 +1,7 @@
 import {Grid, Paper} from "@mui/material";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {Todolist} from "../Todolist/Todolist";
-import React, {FC, useEffect} from "react";
+import React, {FC, useCallback, useEffect} from "react";
 import {useSelector} from "react-redux";
 import {useActions} from "../../Store/Store";
 import {Navigate} from "react-router-dom";
@@ -20,21 +20,25 @@ export const TodolistList: FC = () => {
     } = useActions(todolistsActions)
     useEffect(() => {
         isLoggedIn && fetchTodolist()
-    }, [isLoggedIn,fetchTodolist])
+    }, [isLoggedIn, fetchTodolist])
+    const addTodolistCallback = useCallback(async (title:string)=>{
+        addTodolist(title)
+    },[])
     if (!isLoggedIn) return <Navigate to={"/"}/>
     return (
         <>
-            <Grid container style={{padding: "20px"}}> <AddItemForm addItemCallback={addTodolist}/></Grid>
-            <Grid container spacing={3}>
+            <Grid container style={{padding: "20px"}}> <AddItemForm addItemCallback={addTodolistCallback}/></Grid>
+            <Grid container spacing={3}
+                  style={{overflowX: "scroll", flexWrap: "nowrap"}}>
                 {todolists.map(tl => {
                     return (
                         <Grid key={tl.id} item>
-                            <Paper style={{padding: "10px"}} elevation={3}>
+                            <div style={{width: "300px"}}>
                                 <Todolist title={tl.title}
                                           id={tl.id}
                                           filter={tl.filter}
                                 />
-                            </Paper>
+                            </div>
                         </Grid>
                     )
                 })}
