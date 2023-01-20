@@ -38,21 +38,22 @@ const App: FC = () => {
     const logoutHandler = () => dispatch(loginActions.logoutTC())
     return (
         <BrowserRouter>
-            <div className="App">
+            <div className="App" style={{height: "100vh", position: "relative"}}>
                 <CustomizedSnackbars/>
                 <AppBar position={"static"}>
                     <Toolbar>
                         <IconButton edge={"start"} color={"inherit"} aria-label={"menu"}>
                             <Menu/>
                         </IconButton>
-                        <Typography variant={"h6"}>
-                            News
+                        <Typography sx={{flexGrow: 1}} variant={"h6"}>
+                            Todolist App
                         </Typography>
-                        <Button color={"inherit"} onClick={logoutHandler}>Log out</Button>
+                        <Button sx={{fontWeight: "bold"}} color={"inherit"} onClick={logoutHandler}>Log
+                            out</Button>
                     </Toolbar>
                     {appStatus === AppStatuses.Loading && <LinearProgress/>}
                 </AppBar>
-                <Container fixed>
+                <Container fixed sx={{height: "calc(100% - 64px)", display: "flex", flexDirection: "column"}}>
                     <Routes>
                         <Route element={<Login/>} index path={"/"}/>
                         <Route element={<TodolistList/>} path={"/todo-lists"}/>

@@ -37,6 +37,7 @@ enum Filter {
 
 interface IAddItemFormProps {
     addItemCallback: ((itemTitle: string) => void),
+    placeholder?: string
 }
 
 interface IEditableSpanProps {

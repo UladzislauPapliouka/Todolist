@@ -1,0 +1,14 @@
+.Task {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.5em;
+    margin: 0.5em 0;
+}
+.Task:hover {
+    background-color: #e3e3e3;
+}
+.Task  .Checkbox:hover, .Task > .deleteButton:hover{
+    background-color: transparent;
+}

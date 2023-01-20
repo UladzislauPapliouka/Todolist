@@ -5,6 +5,7 @@ import React, {FC, useCallback, useMemo} from "react";
 import {ITask, TaskStatuses} from "../../types";
 import {useActions} from "../../Store/Store";
 import {tasksAsyncActions} from "../../Store/Reducers";
+import styles from "./Task.module.css"
 
 export const Task: FC<ITask> = React.memo(function Task({
                                                             id,
@@ -54,15 +55,15 @@ export const Task: FC<ITask> = React.memo(function Task({
     }, [deleteTask, todoListId, id])
     console.log('Task is called')
     return (
-        <div style={{position: "relative", display: "flex", alignItems: "center", justifyContent: 'space-between'}}
-             className={`${status === TaskStatuses.Completed && "is-done"}`} key={id}>
+        <div style={{opacity: status ? 0.5:1}} className={styles.Task}>
             <div>
                 <Checkbox
+                    className={styles.Checkbox}
                     onChange={onChangeStatusHandler}
                     checked={status === TaskStatuses.Completed}/>
                 <EditableSpan value={title} changeItemCallback={changeTitleHandler}/>
             </div>
-            <IconButton onClick={onDeleteHandler}>
+            <IconButton className={styles.deleteButton} onClick={onDeleteHandler}>
                 <Delete/>
             </IconButton>
         </div>

@@ -9,6 +9,7 @@ import {
     todolistsSelectors,
     loginSelectors, todolistsActions
 } from "../../Store/Reducers";
+import Scrollbar from "react-scrollbars-custom";
 
 
 export const TodolistList: FC = () => {
@@ -21,15 +22,17 @@ export const TodolistList: FC = () => {
     useEffect(() => {
         isLoggedIn && fetchTodolist()
     }, [isLoggedIn, fetchTodolist])
-    const addTodolistCallback = useCallback(async (title:string)=>{
+    const addTodolistCallback = useCallback(async (title: string) => {
         addTodolist(title)
-    },[])
+    }, [])
     if (!isLoggedIn) return <Navigate to={"/"}/>
     return (
         <>
-            <Grid container style={{padding: "20px"}}> <AddItemForm addItemCallback={addTodolistCallback}/></Grid>
+            <Grid container style={{padding: "20px"}}> <AddItemForm
+                placeholder={"Type todolist title..."}
+                addItemCallback={addTodolistCallback}/></Grid>
             <Grid container spacing={3}
-                  style={{overflowX: "scroll", flexWrap: "nowrap"}}>
+                  style={{overflowX: "auto", flexWrap: "nowrap", flexGrow:"1", marginBottom:"10px"}}>
                 {todolists.map(tl => {
                     return (
                         <Grid key={tl.id} item>

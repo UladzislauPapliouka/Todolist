@@ -2,7 +2,7 @@ import React, {FC, useCallback, useEffect} from "react";
 import {Filter, ITask, ITodolistProps, TaskStatuses} from "../../types";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
-import {Button, ButtonGroup, IconButton, Paper, Typography} from "@mui/material";
+import {Box, Button, ButtonGroup, IconButton, Paper, Typography} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {useSelector} from "react-redux";
 import {useActions} from "../../Store/Store";
@@ -61,14 +61,18 @@ export const Todolist: FC<ITodolistProps> = React.memo(function Todolist({
         setTask(id)
     }, [id, setTask])
     return (
-        <Paper style={{position: 'relative', padding:"10px"}}>
-            <h3><EditableSpan value={title} changeItemCallback={changeTodolistTitleHandler}/>
-            </h3>
-            <IconButton style={{position: "absolute", right: "10px", top: "10px"}}
-                        onClick={deleteTodolistHandler}><Delete/></IconButton>
+        <Paper elevation={3} style={{position: 'relative', padding: "0 10px 10px 10px"}}>
+            <Box display={"flex"} justifyContent={"space-between"}>
+                <Typography variant={"h5"} marginY={1}><EditableSpan value={title}
+                                                                     changeItemCallback={changeTodolistTitleHandler}/>
+                </Typography>
+                <IconButton
+                    onClick={deleteTodolistHandler}><Delete/></IconButton>
+            </Box>
             <AddItemForm addItemCallback={addTaskCallback}/>
             <div>
-                {!tasksForTodolist.length && <Typography style={{padding:"10px", color:"#868686"}} variant={"body1"} >No task here</Typography>}
+                {!tasksForTodolist.length &&
+                    <Typography style={{padding: "10px", color: "#868686"}} variant={"body1"}>No task here</Typography>}
                 {tasksForTodolist.map((task) => {
 
                     return (
@@ -81,7 +85,7 @@ export const Todolist: FC<ITodolistProps> = React.memo(function Todolist({
                 })}
             </div>
             <div>
-                <ButtonGroup>
+                <ButtonGroup sx={{width: "100%", justifyContent: "center"}}>
                     {buttonRender(Filter.ALL, "All", "primary")}
                     {buttonRender(Filter.ACTIVE, "Active", "secondary")}
                     {buttonRender(Filter.COMPLETED, "Completed", "warning")}
