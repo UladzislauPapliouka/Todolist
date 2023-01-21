@@ -11,7 +11,7 @@ export default {
 
 export const TaskBase = () => {
     return (
-        <>
+        <div    style={{width:"300px"}}>
             <Task
                 title={"Task1"}
                 status={TaskStatuses.Completed} startDate={(new Date()).toTimeString()}
@@ -26,6 +26,6 @@ export const TaskBase = () => {
                 deadline={(new Date()).toTimeString()} description={""} order={0} priority={TaskPriorities.High}
                 todoListId={"1"}
                 id={"1"}/>
-        </>
+        </div>
     )
 }

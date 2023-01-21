@@ -7,7 +7,7 @@
     margin: 0.5em 0;
 }
 .Task:hover {
-    background-color: #e3e3e3;
+    background-color: #d2d2d2;
 }
 .Task  .Checkbox:hover, .Task > .deleteButton:hover{
     background-color: transparent;
