@@ -62,10 +62,10 @@ export const Todolist: FC<ITodolistProps> = React.memo(function Todolist({
     }, [id, setTask])
     return (
         <Paper elevation={3} style={{position: 'relative', padding: "0 10px 10px 10px"}}>
-            <Box display={"flex"} justifyContent={"space-between"}>
-                <Typography variant={"h5"} marginY={1}><EditableSpan value={title}
-                                                                     changeItemCallback={changeTodolistTitleHandler}/>
-                </Typography>
+            <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
+                <EditableSpan value={title}
+                              variant={"h5"}
+                              changeItemCallback={changeTodolistTitleHandler}/>
                 <IconButton
                     onClick={deleteTodolistHandler}><Delete/></IconButton>
             </Box>

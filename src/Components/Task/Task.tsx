@@ -2,7 +2,7 @@ import {Checkbox, IconButton} from "@mui/material";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
 import React, {FC, useCallback, useMemo} from "react";
-import {ITask, TaskStatuses} from "../../types";
+import {Filter, ITask, TaskStatuses} from "../../types";
 import {useActions} from "../../Store/Store";
 import {tasksAsyncActions} from "../../Store/Reducers";
 import styles from "./Task.module.css"
@@ -55,7 +55,7 @@ export const Task: FC<ITask> = React.memo(function Task({
     }, [deleteTask, todoListId, id])
     console.log('Task is called')
     return (
-        <div style={{opacity: status ? 0.5:1}} className={styles.Task}>
+        <div style={{opacity: status === TaskStatuses.Completed ? 0.5 : 1}} className={styles.Task}>
             <div>
                 <Checkbox
                     className={styles.Checkbox}

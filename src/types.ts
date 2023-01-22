@@ -1,3 +1,5 @@
+import {Variant} from "@mui/material/styles/createTypography";
+
 interface ITodolistProps {
     title: string
     id: string
@@ -43,6 +45,7 @@ interface IAddItemFormProps {
 interface IEditableSpanProps {
     value: string,
     changeItemCallback: (value: string) => void
+    variant?: Variant
 }
 
 type  ResponseType<D> = {

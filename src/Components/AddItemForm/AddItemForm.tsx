@@ -34,6 +34,7 @@ export const AddItemForm: FC<IAddItemFormProps> = React.memo(function AddItemFor
                        label={placeholder ? placeholder : "Type value"}
                        error={error}
                        fullWidth
+                       autoComplete={"off"}
                        onBlur={onBlurHandler}
                        helperText={error && errorMessage}
                        value={newItemTitle}

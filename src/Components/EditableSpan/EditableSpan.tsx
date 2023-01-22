@@ -1,24 +1,30 @@
 import React, {ChangeEvent, FC, KeyboardEvent, useState} from "react";
 import {IEditableSpanProps} from "../../types";
+import {TextField, Typography} from "@mui/material";
+import styles from "./EditableSpan.module.css"
 
 export const EditableSpan: FC<IEditableSpanProps> = React.memo(function EditableSpan({
-                                                                    value,
-                                                                    changeItemCallback
-                                                                }){
+                                                                                         value,
+                                                                                         changeItemCallback,
+                                                                                         variant
+                                                                                     }) {
 
         const [isEdit, setIsEdit] = useState<boolean>(false)
-        const [newItemTitle, setNewItemTitle] = useState<string>("")
+        const [newItemTitle, setNewItemTitle] = useState<string>(value)
         console.log("Editable span is called")
         const changeItemHandler = () => {
-            if (newItemTitle.trim()) {
-                changeItemCallback(newItemTitle)
-                setNewItemTitle("")
+            if (!newItemTitle.trim()) {
+                setError("Field is required")
+                setNewItemTitle(value)
+            } else if (newItemTitle.trim().length > 100) {
+                setError("Field must be less then 100 symbols")
+                setNewItemTitle(value)
             } else {
-                // setError(true)
+                changeItemCallback(newItemTitle)
             }
         }
         const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-            // setError(false)
+            setError(null)
             setNewItemTitle(event.target.value)
         }
         const onKeyPressHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -31,17 +37,19 @@ export const EditableSpan: FC<IEditableSpanProps> = React.memo(function Editable
             isEdit && changeItemHandler()
             setIsEdit(!isEdit)
         }
-        // const errorMessage = <span className={"error-message"}>Field is required</span>
-        // const [error, setError] = useState<boolean>(false)
+        const [error, setError] = useState<string | null>("")
         //TODO: add error handler
         return isEdit ?
-            <input onKeyPress={onKeyPressHandler}
-                   value={newItemTitle.trim() ? newItemTitle : value}
-                   onChange={onChangeHandler}
-                // className={`${error && "error"}`}
-                   autoFocus
-                   onBlur={toggleEditMode}
+            <TextField onKeyPress={onKeyPressHandler}
+                       value={newItemTitle.trim() ? newItemTitle : value}
+                       onChange={onChangeHandler}
+                       className={styles.editMode}
+                       helperText={error && error}
+                       error={!!error}
+                       autoFocus
+                       onBlur={toggleEditMode}
             /> :
-            <span onDoubleClick={toggleEditMode}>{newItemTitle.trim() ? newItemTitle : value}</span>
+            <Typography className={styles.spanMode} variant={variant ? variant : "body1"}
+                        onDoubleClick={toggleEditMode}>{newItemTitle.trim() ? newItemTitle : value}</Typography>
     }
 )

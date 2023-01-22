@@ -6,9 +6,18 @@
     border-radius: 0.5em;
     margin: 0.5em 0;
 }
+
 .Task:hover {
     background-color: #d2d2d2;
 }
-.Task  .Checkbox:hover, .Task > .deleteButton:hover{
+
+.Task > div {
+    flex-grow: 1;
+    display: inline-flex;
+    align-items: center;
+    width: 80%
+}
+
+.Task .Checkbox:hover, .Task > .deleteButton:hover {
     background-color: transparent;
 }
